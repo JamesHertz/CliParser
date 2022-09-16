@@ -4,6 +4,7 @@ This is a simple parser to be used in interactive programs that requires constan
 
 
 ## TODO:
-- [ ] Look at [this](https://commons.apache.org/proper/commons-cli/usage.html) and [this](https://stackoverflow.com/questions/55749924/java-making-a-simple-interactive-cli-app)
-- [ ] Finish ParserFormat implementation
-- [ ] Make an arg exception
+- [X] Look at [this](https://commons.apache.org/proper/commons-cli/usage.html) and [this](https://stackoverflow.com/questions/55749924/java-making-a-simple-interactive-cli-app) // **I looked but I decided to build my own framework.**
+- [X] Finish ParserFormat implementation
+- [X] Make an arg exception
+- [ ] Build the functional part of the framework
