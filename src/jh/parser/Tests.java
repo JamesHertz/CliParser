@@ -1,8 +1,5 @@
 package jh.parser;
 
-import jh.parser.Argument;
-import jh.parser.Parser;
-import jh.parser.ParserFormat;
 import jh.parser.exeptions.BadArgumentException;
 import jh.parser.exeptions.WrongNumberOfArgsException;
 import org.junit.Test;
@@ -52,7 +49,7 @@ public class Tests {
 
     @Test
     public void test1(){
-        Parser p = new ParserFormat(DECIMAL, STRING, STRING);
+        Format p = new ParserFormat(DECIMAL, STRING, STRING);
         Iterator<Argument> it = p.parse("10 'James Hertz' Hertz");
         assertEquals(10.0, it.next().toDecimal(), 0);
         assertEquals("James Hertz", it.next().toString());
@@ -67,7 +64,7 @@ public class Tests {
 
     @Test
     public void test02(){
-       Parser p = new ParserFormat(INTEGER, INTEGER, INTEGER);
+       Format p = new ParserFormat(INTEGER, INTEGER, INTEGER);
         Iterator<Argument> it;
        try{
             it = p.parse("hi there how");

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ParserFormat implements Parser {
+public class ParserFormat implements Format {
 
    private final List<DataType> format;
 
@@ -16,23 +16,28 @@ public class ParserFormat implements Parser {
     }
 
     @Override
-    public int argsLength() {
+    public int numOfArgs() {
         return format.size();
     }
 
     @Override
-    public Iterator<DataType> formatTypes() {
+    public DataType getType(int idx) {
+        return format.get(idx);
+    }
+
+    @Override
+    public Iterator<DataType> getFormat() {
         return format.iterator();
     }
 
     @Override
     public Iterator<Argument> parse(String line) {
         String[] args = LineParser.parseLine(line);
-        if(args.length != argsLength())
-            throw new WrongNumberOfArgsException(argsLength(), args.length);
+        if(args.length != numOfArgs())
+            throw new WrongNumberOfArgsException(numOfArgs(), args.length);
 
-        List<Argument> parsedArgs = new ArrayList<>(argsLength());
-        Iterator<DataType> it = formatTypes();
+        List<Argument> parsedArgs = new ArrayList<>(numOfArgs());
+        Iterator<DataType> it = getFormat();
         for(String arg: args){
             parsedArgs.add(new Arg(it.next().parse(arg)));
         }
