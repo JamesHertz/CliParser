@@ -3,7 +3,7 @@ package jh.parser;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LineParser {
+class LineParser {
     private static String disEscape(String arg) {
         return arg.replace("\\n", "\n")
                 .replace("\\b", "\b")

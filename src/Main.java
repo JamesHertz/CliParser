@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static jh.parser.LineParser.parseLine;
+//import static jh.parser.LineParser.parseLine;
 
 public class Main {
 /*
@@ -66,7 +66,7 @@ public class Main {
  */
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(parseLine("10 'james hertz' hertz")));
+       // System.out.println(Arrays.toString(parseLine("10 'james hertz' hertz")));
     }
 
 }
