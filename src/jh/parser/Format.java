@@ -8,5 +8,4 @@ public interface Format {
 
     DataType getType(int idx);
     Iterator<DataType> getFormat();
-    Iterator<Argument> parse(String line);
 }

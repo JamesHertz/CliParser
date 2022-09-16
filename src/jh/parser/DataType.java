@@ -18,7 +18,7 @@ public enum DataType {
     }
 
 
-    Object parse(String arg){
+    public Object parse(String arg){
         try{
             return argParser.parse(arg);
         }catch (Exception e){

@@ -3,7 +3,7 @@ package jh.parser;
 import java.util.LinkedList;
 import java.util.List;
 
-class LineParser {
+public class LineParser {
     private static String disEscape(String arg) {
         return arg.replace("\\n", "\n")
                 .replace("\\b", "\b")
@@ -17,7 +17,7 @@ class LineParser {
         return c == '\'' || c == '"';
     }
 
-    public static String[] parseLine(String line) {
+    public static List<String> parseLine(String line) {
         List<String> args = new LinkedList<>();
         boolean inQuote = false;
         boolean inWord = false;
@@ -56,7 +56,7 @@ class LineParser {
             throw new UnsupportedOperationException("unmatched quote: " + line.substring(0, track+1));
         else if(inWord) args.add(line.substring(track));
         // raise exception here
-        return args.toArray(new String[args.size()]);
+        return args;
 
     }
 }

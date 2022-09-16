@@ -14,11 +14,13 @@ public class Tests {
 
     @Test
     public void lpTest1(){
+        /*
         assertArrayEquals(parseLine("10 'james hertz' hertz"), new String[]{"10", "james hertz", "hertz"});
         assertArrayEquals(parseLine("tmp 'abc\\n' \\n"), new String[]{"tmp", "abc\n", "\\n"});
         assertArrayEquals(parseLine("tmp 'hi there\"' \\n"), new String[]{"tmp", "hi there\"", "\\n"});
         assertArrayEquals(parseLine("I just' doing something'"), new String[]{"I", "just", " doing something"});
 
+*/
         /*
         try{
             parseLine("10 'james' hertz' hertz");
@@ -29,6 +31,7 @@ public class Tests {
          */
     }
 
+    /*
     @Test
     public void lpTest2(){
         try{
@@ -80,5 +83,6 @@ public class Tests {
             assertTrue(e instanceof WrongNumberOfArgsException);
         }
     }
+     */
 
 }
