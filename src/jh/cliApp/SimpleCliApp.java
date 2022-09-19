@@ -7,33 +7,38 @@ import jh.parser.exeptions.WrongNumberOfArgsException;
 
 import static jh.parser.LineParser.parseLine;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 public class SimpleCliApp<T> implements CliApp<T> {
     /*
         IDEA: use a map for managing this thing
      */
+
+    private final Class<?> container;
     private final Map<String, Command<T>> commands;
-    private final Scanner input;
 
-   private final EditCmdContext<T> defCtx;
-
-    public SimpleCliApp(T ctx, InputStream in, Command<T> ...commands){
-        this.defCtx = new CommandCtx<>(ctx);
+    public SimpleCliApp(Class<?> container){
+        this.container = container;
         this.commands = new TreeMap<>();
-        this.input = new Scanner(in);
-        for(Command<T> cmd: commands)
-            this.addCommand(cmd);
-
-    }
-    @Override
-    public void addCommand(Command<T> cmd) {
-        // this about exception
-        this.commands.put(cmd.commandName(), cmd);
+        this.getCommands();
+        // get commands
     }
 
+    private void getCommands(){
+        for(Method m: container.getMethods()){
+            if(Modifier.isStatic(m.getModifiers())){
+                // check if format is suitable
+                // make a data structure to save the command name
+                // and the list of it's args types and name...
+            }
+        }
+    }
     @Override
     public void run() {
+        /*
         List<String> args;
         Command<T> cmd;
         String target;
@@ -60,7 +65,7 @@ public class SimpleCliApp<T> implements CliApp<T> {
             //  - think about prompt
             // use starts with or??
         }
-
+         */
     }
 
     private List<Argument> checkArgs(Format fmt, List<String> args){
