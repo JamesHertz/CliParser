@@ -1,3 +1,7 @@
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,8 +69,30 @@ public class Main {
 
  */
 
-    public static void main(String[] args) {
-       // System.out.println(Arrays.toString(parseLine("10 'james hertz' hertz")));
+
+    static class Auto{
+        public static void doSomething(int name, boolean check){
+            System.out.printf("name: %s check: %b\n", name, check);
+        }
+        private static int getValue(int name, String other){return 0;}
+
+        public boolean isOne(){ return false;}
+    }
+
+    public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {
+        Class<?> aux = Auto.class;
+
+        for(Method m: aux.getMethods()){
+            if(Modifier.isStatic(m.getModifiers())){
+                System.out.print(m.getName() + ": ");
+                for(Parameter p: m.getParameters()){
+                    System.out.print(p.getName() + "; ");
+                }
+                System.out.println();
+                Object[] values = new Object[] {10, false};
+                m.invoke(null, values);
+            }
+        }
     }
 
 }
