@@ -6,7 +6,7 @@ import jh.parser.ParserFormat;
 
 import java.util.function.Consumer;
 
-public class CmdCommand<T> implements Command<T> {
+public class CmdCommand<T> implements CliCommand<T> {
 
     private final Consumer<CommandContext<T>> cmdFunc;
     private final String cmdName;

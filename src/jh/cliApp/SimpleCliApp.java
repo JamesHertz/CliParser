@@ -1,12 +1,11 @@
 package jh.cliApp;
 
+import jh.cliApp.annotations.Command;
 import jh.parser.Argument;
 import jh.parser.DataType;
 import jh.parser.Format;
 import jh.parser.exeptions.WrongNumberOfArgsException;
 
-import static jh.parser.LineParser.parseLine;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -18,7 +17,7 @@ public class SimpleCliApp<T> implements CliApp<T> {
      */
 
     private final Class<?> container;
-    private final Map<String, Command<T>> commands;
+    private final Map<String, CliCommand<T>> commands;
 
     public SimpleCliApp(Class<?> container){
         this.container = container;
@@ -29,10 +28,20 @@ public class SimpleCliApp<T> implements CliApp<T> {
 
     private void getCommands(){
         for(Method m: container.getMethods()){
-            if(Modifier.isStatic(m.getModifiers())){
-                // check if format is suitable
-                // make a data structure to save the command name
+            Command aux = m.getAnnotation(Command.class);
+            if(Modifier.isStatic(m.getModifiers()) && aux != null){
                 // and the list of it's args types and name...
+                for(Parameter p: m.getParameters()){
+                    if(p.getType() == int.class){
+                        System.out.println("I got an integer");
+                    }
+                    else if(p.getType() == boolean.class){
+                        System.out.println("I got an boolean");
+                    }else System.out.println(p.getType());
+
+                }
+                // make a data structure to save the command name
+                // check if format is suitable
             }
         }
     }
@@ -75,30 +84,8 @@ public class SimpleCliApp<T> implements CliApp<T> {
         List<Argument> parsedArgs = new ArrayList<>(fmt.numOfArgs());
         Iterator<DataType> it = fmt.getFormat();
         for(String arg: args){
-            parsedArgs.add(new Arg(it.next().parse(arg)));
+            //parsedArgs.add(new Arg(it.next().parse(arg)));
         }
         return parsedArgs;
-    }
-
-    private static class Arg implements Argument {
-        private Object value;
-        private Arg(Object value) {
-            this.value = value;
-        }
-
-        @Override
-        public int toInteger() {
-            return (int) value;
-        }
-
-        @Override
-        public double toDecimal() {
-            return (double) value;
-        }
-
-        @Override
-        public String toString(){
-            return (String) value;
-        }
     }
 }
