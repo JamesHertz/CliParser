@@ -1,3 +1,5 @@
+import jh.cliApp.annotations.Command;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -71,6 +73,7 @@ public class Main {
 
 
     static class Auto{
+        @Command(name="something")
         public static void doSomething(int name, boolean check){
             System.out.printf("name: %s check: %b\n", name, check);
         }

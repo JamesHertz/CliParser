@@ -34,7 +34,34 @@ class Plans{
 		void run();
 	}
 	// POSSIBLE USER INTERFACE:
+	interface  CliApp{
+		void run();
+		void exit();
+	}
+
+	class CliApp{
+
+		private final Class<?> src_class;
+		private final Map<String, Cmd> commands;
+
+		public CliApp(Classe<?> src){
+			src_class = src;
+			// getmethods:
+			getcmds();
+		}
+
+		private void getcmds(){
+			// Do something
+		}
+	}
+
+
 	class Main{
+
+		public static void main(String[] args){
+			CliProgram<GradesManager> app = new SimpleCliProgram(Main.class, new GManage());
+			app.run();
+		}
 		/*
 			My ideas are possible but I we have to take in accout the '-parameters' in
 			the compilation process.
