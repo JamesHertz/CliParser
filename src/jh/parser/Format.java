@@ -6,6 +6,10 @@ import java.util.Iterator;
 public interface Format {
     int numOfArgs();
 
-    DataType getType(int idx);
-    Iterator<DataType> getFormat();
+    Argument getType(int idx);
+    Iterator<Argument> getFormat();
+
+    void addArgument(String name, DataType type);
+    // think about this later...
+    Object[] parseArgs(String[] args); // throws exception
 }

@@ -2,8 +2,12 @@ package jh.cliApp;
 
 import jh.parser.Format;
 
-public interface CliCommand<T> {
+import java.lang.reflect.Method;
+
+public interface CliCommand {
     String commandName();
+
+    String description();
     Format argsFormat();
-    void runCommand(CommandContext<T> context);
+    Method commandMethod();
 }

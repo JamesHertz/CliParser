@@ -26,7 +26,6 @@ public enum DataType {
         }
     }
 
-
     @FunctionalInterface
     interface ParseFunc{
         Object parse(String value);

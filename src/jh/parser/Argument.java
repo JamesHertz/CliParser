@@ -2,7 +2,7 @@ package jh.parser;
 
 public interface Argument {
 
-    int toInteger();
-    double toDecimal();
-    String toString();
+    String name();
+    DataType type();
+    Object parse(String value); // throws exception
 }

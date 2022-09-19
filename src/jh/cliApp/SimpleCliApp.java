@@ -1,9 +1,11 @@
 package jh.cliApp;
 
 import jh.cliApp.annotations.Command;
+import jh.cliApp.exception.BadFormatException;
 import jh.parser.Argument;
-import jh.parser.DataType;
+import static jh.parser.DataType.*;
 import jh.parser.Format;
+import jh.parser.ParserFormat;
 import jh.parser.exeptions.WrongNumberOfArgsException;
 
 import java.lang.reflect.Method;
@@ -17,7 +19,7 @@ public class SimpleCliApp<T> implements CliApp<T> {
      */
 
     private final Class<?> container;
-    private final Map<String, CliCommand<T>> commands;
+    private final Map<String, CliCommand> commands;
 
     public SimpleCliApp(Class<?> container){
         this.container = container;
@@ -26,23 +28,29 @@ public class SimpleCliApp<T> implements CliApp<T> {
         // get commands
     }
 
+    private void generateCommand(Command aux, Method m){
+        // TODO: what to do when the function is empty?
+        Parameter[] parameters = m.getParameters();
+        if(parameters[0].getType() != CommandContext.class)
+            throw new BadFormatException(m.getName(), parameters[0].getType());
+        Format format = new ParserFormat(parameters.length - 1); // what about no parameter functions
+        for(int i = 1; i < parameters.length; i++){
+            Parameter p = parameters[i];
+            // TODO:
+            //  - find a way to get the real type based on p.getType() and have a exception when it's something else than
+            //  a "native" datatype or a String
+            format.addArgument(p.getName(), DECIMAL);
+        }
+
+        // TODO: exception if command duplicated
+        commands.put(aux.name(), new CliCmd(aux.name(), aux.desc(), format, m));
+    }
     private void getCommands(){
         for(Method m: container.getMethods()){
             Command aux = m.getAnnotation(Command.class);
-            if(Modifier.isStatic(m.getModifiers()) && aux != null){
-                // and the list of it's args types and name...
-                for(Parameter p: m.getParameters()){
-                    if(p.getType() == int.class){
-                        System.out.println("I got an integer");
-                    }
-                    else if(p.getType() == boolean.class){
-                        System.out.println("I got an boolean");
-                    }else System.out.println(p.getType());
+            if(Modifier.isStatic(m.getModifiers()) && aux != null)
+                generateCommand(aux, m);
 
-                }
-                // make a data structure to save the command name
-                // check if format is suitable
-            }
         }
     }
     @Override
@@ -77,15 +85,4 @@ public class SimpleCliApp<T> implements CliApp<T> {
          */
     }
 
-    private List<Argument> checkArgs(Format fmt, List<String> args){
-        if(args.size() != fmt.numOfArgs())
-            throw new WrongNumberOfArgsException(fmt.numOfArgs(), args.size());
-
-        List<Argument> parsedArgs = new ArrayList<>(fmt.numOfArgs());
-        Iterator<DataType> it = fmt.getFormat();
-        for(String arg: args){
-            //parsedArgs.add(new Arg(it.next().parse(arg)));
-        }
-        return parsedArgs;
-    }
 }
