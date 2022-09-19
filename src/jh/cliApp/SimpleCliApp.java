@@ -1,16 +1,15 @@
-package jh.cmdProgram;
+package jh.cliApp;
 
 import jh.parser.Argument;
 import jh.parser.DataType;
 import jh.parser.Format;
-import jh.parser.ParserFormat;
 import jh.parser.exeptions.WrongNumberOfArgsException;
 
 import static jh.parser.LineParser.parseLine;
 import java.io.InputStream;
 import java.util.*;
 
-public class CmdProgram<T> implements SimpleCmdProgram<T>{
+public class SimpleCliApp<T> implements CliApp<T> {
     /*
         IDEA: use a map for managing this thing
      */
@@ -19,7 +18,7 @@ public class CmdProgram<T> implements SimpleCmdProgram<T>{
 
    private final EditCmdContext<T> defCtx;
 
-    public CmdProgram(T ctx, InputStream in, Command<T> ...commands){
+    public SimpleCliApp(T ctx, InputStream in, Command<T> ...commands){
         this.defCtx = new CommandCtx<>(ctx);
         this.commands = new TreeMap<>();
         this.input = new Scanner(in);

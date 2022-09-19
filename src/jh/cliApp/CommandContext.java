@@ -1,4 +1,4 @@
-package jh.cmdProgram;
+package jh.cliApp;
 
 import jh.parser.Argument;
 
