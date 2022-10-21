@@ -3,6 +3,7 @@ package jh.parser;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: think about where to put this class
 public class LineParser {
     private static String disEscape(String arg) {
         return arg.replace("\\n", "\n")
@@ -57,6 +58,5 @@ public class LineParser {
         else if(inWord) args.add(line.substring(track));
         // raise exception here
         return args;
-
     }
 }

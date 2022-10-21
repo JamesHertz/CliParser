@@ -1,15 +1,7 @@
 package jh.parser;
 
-import jh.parser.exeptions.BadArgumentException;
-import jh.parser.exeptions.WrongNumberOfArgsException;
 import org.junit.Test;
 
-import java.util.Iterator;
-
-import static jh.parser.DataType.*;
-import static jh.parser.LineParser.parseLine;
-
-import static org.junit.Assert.*;
 public class Tests {
 
     @Test
