@@ -8,7 +8,12 @@ This is a simple parser to be used in interactive programs that requires constan
 - [X] Finish ParserFormat implementation
 - [X] Make an arg exception
 - [X] Build the functional part of the framework
-- [ ] Comment already done code
+- [ ] support all types
+- [ ] create some exceptions
+- [ ] look at the ideas
+
+
+## IDEAS
 - [ ] think about the context
 - [ ] think about options
 - [ ] Think about the exit process

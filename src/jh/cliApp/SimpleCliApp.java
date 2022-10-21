@@ -21,10 +21,12 @@ public class SimpleCliApp<T> implements CliApp<T> {
      */
 
     private final Map<String, CliCommand> commands;
+    private final CommandContext<T> cmdCtx;
 
     public SimpleCliApp(Class<?> container){
         this.commands = new TreeMap<>();
         this.getCommands(container);
+        cmdCtx = new CommandCtx<T>(null);
     }
 
     private void generateCommand(Command aux, Method m){
@@ -41,7 +43,7 @@ public class SimpleCliApp<T> implements CliApp<T> {
         System.out.printf("adding command: %s; desc: %s\n", aux.name(), (desc.length() > 0) ? desc : "None");
 
 
-        Format format = new ParserFormat(parameters.length - 1); // what about no parameter functions
+        Format format = new ParserFormat(parameters.length); // what about no parameter functions
         for(int i = 1; i < parameters.length; i++){
             Parameter p = parameters[i];
             // TODO:
@@ -53,6 +55,7 @@ public class SimpleCliApp<T> implements CliApp<T> {
             System.out.println("\t - adding parameter: " + p.getName());
         }
 
+        m.setAccessible(true); // help from stackoverflow
         // TODO: exception if command duplicated
         commands.put(aux.name(), new CliCmd(aux.name(), aux.desc(), format, m));
     }
@@ -70,21 +73,20 @@ public class SimpleCliApp<T> implements CliApp<T> {
 
         while(true){
             System.out.print(prompt);
-            List<String> args = parseLine(in.nextLine()); // a catch block later
+            String[] args = parseLine(in.nextLine()); // a catch block later
 
             // parse line
-            if(args.size() == 0) continue;
+            if(args.length  == 0) continue;
 
-            CliCommand cmd = commands.get(args.get(0));
+            // select the command
+            CliCommand cmd = commands.get(args[0]);
 
             if(cmd == null){
-                System.out.println("Unknown command: " + args.get(0));
+                System.out.println("Unknown command: " + args[0]);
             }else{
-                System.out.println("running command: " +  cmd.commandName());
+                cmd.run(cmdCtx, args);
+                System.out.println();
             }
-            // select the command
-            // parse the args
-            // if everything is okay print the parameter
 
         }
 

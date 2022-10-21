@@ -18,7 +18,7 @@ public class LineParser {
         return c == '\'' || c == '"';
     }
 
-    public static List<String> parseLine(String line) {
+    public static String[] parseLine(String line) {
         List<String> args = new LinkedList<>();
         boolean inQuote = false;
         boolean inWord = false;
@@ -57,6 +57,6 @@ public class LineParser {
             throw new UnsupportedOperationException("unmatched quote: " + line.substring(0, track+1));
         else if(inWord) args.add(line.substring(track));
         // raise exception here
-        return args;
+        return args.toArray(new String[0]);
     }
 }

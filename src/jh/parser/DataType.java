@@ -5,7 +5,7 @@ import jh.parser.exeptions.BadArgumentException;
 public enum DataType {
 
     INTEGER(Integer::parseInt),
-    DECIMAL(Double::parseDouble),
+    DECIMAL(Float::parseFloat),
     STRING(value -> value);
 
 
@@ -22,7 +22,7 @@ public enum DataType {
         try{
             return argParser.parse(arg);
         }catch (Exception e){
-            throw new BadArgumentException(arg, this.typeDesc, e.getMessage());
+            throw new BadArgumentException(this.typeDesc, arg, e.getMessage());
         }
     }
 
