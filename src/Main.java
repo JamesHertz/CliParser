@@ -9,7 +9,8 @@ public class Main {
 
     static class Auto{
         @Command(name="register")
-        public static void doSomething(CommandContext<Integer> ctx, float temperature){
+        public static void doSomething(CommandContext<Integer> ctx, float temperature, String name){
+            System.out.println("name = " + name);
             System.out.printf("Temperature %.2f registered", temperature);
         }
 

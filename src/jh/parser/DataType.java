@@ -4,17 +4,27 @@ import jh.parser.exeptions.BadArgumentException;
 
 public enum DataType {
 
-    INTEGER(Integer::parseInt),
-    DECIMAL(Float::parseFloat),
-    STRING(value -> value);
+    // TODO: think about boolean type
+    INTEGER(Integer::parseInt, int.class),
+    LONG(Long::parseLong, long.class),
+    BYTE(Byte::parseByte, byte.class),
+    FLOAT(Float::parseFloat, float.class),
+    DOUBLE(Double::parseDouble, double.class),
+    STRING(value -> value, String.class),
+    CHAR( value -> { // still think about this....
+        if(value.length() > 1) throw new RuntimeException();
+        return value.charAt(0);
+    }, char.class);
 
 
     private final String typeDesc;
     private final ParseFunc argParser;
+    private final Class<?> mType;
 
-    DataType(ParseFunc argParser){
+    DataType(ParseFunc argParser, Class<?> mType){
         this.typeDesc = this.name().toLowerCase();
         this.argParser = argParser;
+        this.mType = mType;
     }
 
 
@@ -24,6 +34,13 @@ public enum DataType {
         }catch (Exception e){
             throw new BadArgumentException(this.typeDesc, arg, e.getMessage());
         }
+    }
+
+    public static DataType getType(Class<?> type){
+        for(DataType d : values()){
+            if(d.mType == type) return d;
+        }
+        return null;
     }
 
     @FunctionalInterface

@@ -3,7 +3,9 @@ package jh.cliApp;
 import jh.cliApp.annotations.Command;
 import jh.cliApp.exception.BadFormatException;
 import jh.parser.Argument;
-import static jh.parser.DataType.*;
+import jh.parser.DataType;
+
+import jh.parser.DataType;
 import jh.parser.Format;
 import jh.parser.ParserFormat;
 import jh.parser.exeptions.WrongNumberOfArgsException;
@@ -43,13 +45,18 @@ public class SimpleCliApp<T> implements CliApp<T> {
         System.out.printf("adding command: %s; desc: %s\n", aux.name(), (desc.length() > 0) ? desc : "None");
 
 
-        Format format = new ParserFormat(parameters.length); // what about no parameter functions
+        Format format = new ParserFormat(parameters.length - 1); // what about no parameter functions
         for(int i = 1; i < parameters.length; i++){
             Parameter p = parameters[i];
             // TODO:
             //  - find a way to get the real type based on p.getType() and have a exception when it's something else than
             //  a "native" datatype or a String
-            format.addArgument(p.getName(), DECIMAL);
+            DataType type = DataType.getType(p.getType());
+
+            // TODO: make a more specific exception
+            if(type == null) throw new RuntimeException("not primitive type provided");
+
+            format.addArgument(p.getName(), type);
 
             // TODO: find a way to identify the type of parameters
             System.out.println("\t - adding parameter: " + p.getName());
