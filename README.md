@@ -1,7 +1,8 @@
 # Simple CLI parser
 
-This is a simple parser to be used in interactive programs that requires constant user input.
+Back when I first started to code in java (in college), in my classes we always did and still do interactive programs terminal programs. Having to take the input and check if what was provided is the exact type what we were expected was quite annoying. And if the program grows a lot, it will very burdersome to do. 
 
+After a it of searching I didn't find nothing that provides what I wanted. So I am doing my own libray/framework. Let's see what will come out of this :)
 
 ## TODO:
 - [X] Look at [this](https://commons.apache.org/proper/commons-cli/usage.html) and [this](https://stackoverflow.com/questions/55749924/java-making-a-simple-interactive-cli-app) // **I looked but I decided to build my own framework.**
