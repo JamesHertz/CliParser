@@ -9,7 +9,8 @@ public class ParserFormat implements Format {
    private record CmdArgument(String name, DataType type) implements Argument {
        @Override
         public Object parse(String value) {
-            return type.parse(value);
+           return null;
+//            return type.parse(value);
         }
    };
    private final List<Argument> format;

@@ -1,5 +1,6 @@
 package jh.parser;
 
+
 import jh.parser.exeptions.BadArgumentException;
 
 public enum DataType {
@@ -13,10 +14,10 @@ public enum DataType {
     BOOLEAN(value -> {
         if(value.equals("true")) return true;
         else if (value.equals("false")) return false;
-        else throw new RuntimeException();
+        else throw new BadArgumentException(value);
     }, boolean.class),
     CHAR( value -> { // still think about this....
-        if(value.length() > 1) throw new RuntimeException();
+        if(value.length() > 1) throw new BadArgumentException(value); //throw new RuntimeException();
         return value.charAt(0);
     }, char.class);
 
@@ -31,16 +32,19 @@ public enum DataType {
         this.mType = mType;
     }
 
-    public Object parse(String arg){
-//        try{
-        //}catch (Exception e){ // TODO: work over here
-        //    throw new BadArgumentException(this.typeDesc, arg, e.getMessage());
-        //}
-        // by now :)
-        return argParser.parse(arg);
+    public Class<?> getBaseType(){
+        return this.mType;
     }
 
-    public static DataType getType(Class<?> type){
+    public Object parse(String arg) throws BadArgumentException{
+        try{
+            return argParser.parse(arg);
+        }catch (NumberFormatException e){
+            throw new BadArgumentException(arg) ;
+        }
+    }
+
+    public static DataType getType(Class<?> type) {
         for(DataType d : values()){
             if(d.mType == type) return d;
         }
@@ -49,7 +53,7 @@ public enum DataType {
 
     @FunctionalInterface
     interface ParseFunc{
-        Object parse(String value);
+        Object parse(String value) throws BadArgumentException;
     }
 
 }

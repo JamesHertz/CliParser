@@ -1,14 +1,10 @@
 import jh.cliApp.CliApp;
 import jh.cliApp.SimpleCliApp;
 import jh.cliApp.annotations.Command;
-import jh.parser.LineParser;
+import static jh.parser.exeptions.DTExpectedMessage.messages;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,23 +14,24 @@ public class Main {
 
     static class Auto{
 
-        List<String> names;
+        List<Integer> values;
         public Auto(){
-           names = new ArrayList<>();
+           values = new ArrayList<>();
         }
 
+        // exception: NumberFormatException
         @Command(name="add") // if name non specified, generate it :)
-        public void add(String name){
-           names.add(name);
+        public void add(byte value){
+           values.add((int) value);
         }
 
         @Command(name="list") // if name non specified, generate it :)
         public void list(){
-            Iterator<String> it = names.iterator();
+            Iterator<Integer> it = values.iterator();
             if(!it.hasNext())
-                System.out.println("No names in stored :(");
+                System.out.println("No values in stored :(");
             else{
-                System.out.println("the added names are:");
+                System.out.println("the added values are:");
                 while(it.hasNext())
                     System.out.println("-> " + it.next());
             }
@@ -55,8 +52,12 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        CliApp app = new SimpleCliApp(new Auto());
-        app.run();
+        //for(Class<?> key : messages.keySet()){
+        //    System.out.printf("type: %s\nmsg: %s\n", key, messages.get(key));
+        //    System.out.println("-------------------------------------");
+        //}
+        //CliApp app = new SimpleCliApp(new Auto());
+        //app.run();
 
         //for(;;){
         //    System.out.print(">> ");
