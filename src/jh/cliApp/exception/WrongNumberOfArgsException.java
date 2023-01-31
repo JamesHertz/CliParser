@@ -1,6 +1,6 @@
-package jh.parser.exeptions;
+package jh.cliApp.exception;
 
-public class WrongNumberOfArgsException extends RuntimeException{
+public class WrongNumberOfArgsException extends CliAppException{
 
     private static final String MSG = "Expected %d args but got %s args.";
     private final int expected, provided;
@@ -14,7 +14,6 @@ public class WrongNumberOfArgsException extends RuntimeException{
     int expectedArgs(){
         return expected;
     }
-
     int provided(){
         return provided;
     }

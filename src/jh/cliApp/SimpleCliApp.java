@@ -1,56 +1,58 @@
 package jh.cliApp;
 
 import jh.cliApp.annotations.Command;
-import jh.cliApp.exception.BadFormatException;
+import jh.cliApp.exception.CliAppException;
+import jh.cliApp.exception.UnknownCmdException;
+import jh.cliApp.exception.WrongNumberOfArgsException;
 import jh.parser.Argument;
 import jh.parser.DataType;
 
-import jh.parser.DataType;
 import jh.parser.Format;
 import jh.parser.ParserFormat;
-import jh.parser.exeptions.WrongNumberOfArgsException;
 
 import static jh.parser.LineParser.parseLine;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-public class SimpleCliApp<T> implements CliApp<T> {
+public class SimpleCliApp implements CliAPI{
     /*
         IDEA: use a map for managing this thing
      */
 
     private final Map<String, CliCommand> commands;
-    private final CommandContext<T> cmdCtx;
+    private final Object cmdStore;
 
-    public SimpleCliApp(Class<?> container){
-        this.commands = new TreeMap<>();
-        this.getCommands(container);
-        cmdCtx = new CommandCtx<T>(null);
+    /*
+        TODO:
+               - add a default command for exit
+               - add documentation for the methods
+               - build a set of useful libraries
+    */
+
+    public SimpleCliApp(Object cmdStore){
+        this.cmdStore = cmdStore;
+        commands = new TreeMap<>();
+        this.getCommands(cmdStore.getClass());
     }
 
+
     private void generateCommand(Command aux, Method m){
-        // TODO: what to do when the function is empty?
         Parameter[] parameters = m.getParameters();
 
-        /*
-        TODO: uncomment later and handle the generic problem
-        Class<?> firstPar = parameters[0].getType();
-        if(firstPar != CommandContext.class)
-            throw new BadFormatException(m.getName(), firstPar);
-         */
+        // for debug
         String desc = aux.desc();
         System.out.printf("adding command: %s; desc: %s\n", aux.name(), (desc.length() > 0) ? desc : "None");
 
+        int i = 0;
+        if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++i;
+        Format format = new ParserFormat(parameters.length - i);
 
-        Format format = new ParserFormat(parameters.length - 1); // what about no parameter functions
-        for(int i = 1; i < parameters.length; i++){
+        for(; i < parameters.length; ++i){
             Parameter p = parameters[i];
-            // TODO:
-            //  - find a way to get the real type based on p.getType() and have a exception when it's something else than
-            //  a "native" datatype or a String
             DataType type = DataType.getType(p.getType());
 
             // TODO: make a more specific exception
@@ -63,40 +65,78 @@ public class SimpleCliApp<T> implements CliApp<T> {
         }
 
         m.setAccessible(true); // help from stackoverflow
+
         // TODO: exception if command duplicated
-        commands.put(aux.name(), new CliCmd(aux.name(), aux.desc(), format, m));
+        commands.put(aux.name(), new AppCmd(aux.name(), aux.desc(), format, m));
     }
+
     private void getCommands(Class<?> container){
         for(Method m: container.getMethods()){
             Command aux = m.getAnnotation(Command.class);
-            if(Modifier.isStatic(m.getModifiers()) && aux != null)
-                generateCommand(aux, m);
+            if(aux != null) generateCommand(aux, m);
         }
+    }
+
+    private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
+        Format fmt = cmd.argsFormat();
+        if(fmt.size() != (args.length - 1)){ // because first arg is the command name
+            throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
+        }
+
+        int i = 0;
+        Object[] cmd_args = new Object[cmd.parametersSize()];
+        if(cmd.receivesCliApi()) cmd_args[i++] = this;
+
+        for (Iterator<Argument> it = fmt.getFormat(); it.hasNext(); ++i) {
+            Argument arg = it.next();
+            cmd_args[i] = arg.parse(args[i + 1]); // +1 because the first arg is the cmd name
+        }
+
+        return cmd_args;
+    }
+
+    private void run_commands(InputStream stream) throws IOException, CliAppException {
+        String[] args = parseLine(stream);
+        if(args.length > 0){
+            String commandName = args[0];
+            CliCommand cmd = commands.get(commandName);
+            // IDEAS: have a class named messages :)
+            if(cmd == null) throw new UnknownCmdException(commandName);
+
+            Object[] cmd_args = parse_args(cmd, args);
+            cmd.run(this.cmdStore, cmd_args);
+        }
+
     }
     @Override
     public void run() {
         final String prompt = ">> ";
-        Scanner in = new Scanner(System.in);
+//        Scanner in = new Scanner(System.in);
 
         while(true){
             System.out.print(prompt);
-            String[] args = parseLine(in.nextLine()); // a catch block later
-
-            // parse line
-            if(args.length  == 0) continue;
-
-            // select the command
-            CliCommand cmd = commands.get(args[0]);
-
-            if(cmd == null){
-                System.out.println("Unknown command: " + args[0]);
-            }else{
-                cmd.run(cmdCtx, args);
-                System.out.println();
+            try{
+                run_commands(System.in);
+            }catch (CliAppException e){
+                System.out.printf("Error: %s\n", e.getMessage());
+            } catch (Exception e){
+                e.printStackTrace();
             }
-
         }
-
     }
 
+    @Override
+    public Iterator<? extends CommandInfo> getAllCommands() {
+        return commands.values().iterator();
+    }
+
+    @Override
+    public Object getCmdStore() {
+        return cmdStore;
+    }
+
+    @Override
+    public void exit() {
+        // do something :)
+    }
 }

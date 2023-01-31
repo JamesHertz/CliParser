@@ -89,6 +89,20 @@ class Plans{
 	}
 
 
+	class CliApp {
+		void run();
+		void exit();
+		void addEventListener();
+	}
+	class Commands{
+		public void exit(CliApp app){
+
+		}
+	}
+
+
+	// way of storing the arguments
+	Format myFormat = Map<String, DataType>;
 }
 
 

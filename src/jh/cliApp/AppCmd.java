@@ -1,20 +1,17 @@
 package jh.cliApp;
 
 import jh.parser.Format;
-
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Modifier;
 
 // think about name...
-public class CliCmd implements CliCommand {
+class AppCmd implements CliCommand {
 
     private final String cmdName, description;
     private final Format format;
     private final Method method;
 
-    public CliCmd(String name, String description, Format parFormat, Method method){
+    public AppCmd(String name, String description, Format parFormat, Method method){
         this.format = parFormat;
         this.cmdName= name;
         this.description = description;
@@ -36,12 +33,33 @@ public class CliCmd implements CliCommand {
     }
 
     @Override
+    public int parametersSize() {
+        return method.getParameters().length;
+    }
+
+    @Override
+    public boolean receivesCliApi() {
+        return this.parametersSize() != format.size();
+    }
+
+    @Override
     public Method commandMethod() {
         return method;
     }
 
-
     @Override
+    public void run(Object cmdStore, Object[] args) {
+        try{
+            Object self = (Modifier.isStatic(method.getModifiers())) ?  null : cmdStore;
+            method.invoke(self, args);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+
+    /*
     public <T> void run(CommandContext<T> ctx, String[] args){
         // should I change it from String[] to List<String> ???
         Object[] parsedArgs = new Object[args.length];
@@ -60,7 +78,7 @@ public class CliCmd implements CliCommand {
             System.exit(1);
         }
     }
-
+     */
 
 
 }

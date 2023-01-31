@@ -1,6 +1,10 @@
 package jh.cliApp;
 
-public interface CliApp<T> {
+import jh.cliApp.annotations.Command;
+
+import java.util.Iterator;
+
+public interface CliApp {
     void run();
-    // think about void exit()
+    Iterator< ? extends CommandInfo> getAllCommands();
 }

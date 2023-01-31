@@ -1,33 +1,21 @@
 package jh.parser;
 
-
-
-import jh.parser.exeptions.WrongNumberOfArgsException;
-
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class ParserFormat implements Format {
 
+   private record CmdArgument(String name, DataType type) implements Argument {
+       @Override
+        public Object parse(String value) {
+            return type.parse(value);
+        }
+   };
    private final List<Argument> format;
 
-    public ParserFormat(int number){
-        this.format = new ArrayList<>(number);
-    }
-
-    public void addArgument(String name, DataType type){
-        format.add(new CmdArgument(name, type));
-    }
-    @Override
-    public int numOfArgs() {
-        return format.size();
-    }
-
-    @Override
-    public Argument getType(int idx) {
-        return format.get(idx);
+    public ParserFormat(int size){
+        this.format = new ArrayList<>(size);
     }
 
     @Override
@@ -35,6 +23,15 @@ public class ParserFormat implements Format {
         return format.iterator();
     }
 
+    @Override
+    public int size(){
+        return format.size();
+    }
+
+    public void addArgument(String name, DataType type){
+         format.add(new CmdArgument(name, type));
+    }
+    /*
     @Override
     public Object[] parseArgs(String[] args) {
         if(args.length != format.size())
@@ -49,4 +46,5 @@ public class ParserFormat implements Format {
         return result;
     }
 
+     */
 }
