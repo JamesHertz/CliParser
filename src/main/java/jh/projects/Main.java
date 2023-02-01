@@ -1,3 +1,5 @@
+package jh.projects;
+
 import jh.projects.cliApp.CliAPI;
 import jh.projects.cliApp.CliApp;
 import jh.projects.cliApp.SimpleCliApp;
