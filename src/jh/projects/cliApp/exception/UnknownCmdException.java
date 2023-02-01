@@ -1,4 +1,4 @@
-package jh.cliApp.exception;
+package jh.projects.cliApp.exception;
 
 public class UnknownCmdException extends CliAppException{
     private static final String MSG = "Unkonwn command: %s";

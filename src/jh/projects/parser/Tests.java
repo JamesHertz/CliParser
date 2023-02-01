@@ -1,4 +1,4 @@
-package jh.parser;
+package jh.projects.parser;
 
 import org.junit.Test;
 

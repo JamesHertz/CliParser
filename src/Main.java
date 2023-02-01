@@ -1,7 +1,7 @@
-import jh.cliApp.CliAPI;
-import jh.cliApp.CliApp;
-import jh.cliApp.SimpleCliApp;
-import jh.cliApp.annotations.CliAppCommand;
+import jh.projects.cliApp.CliAPI;
+import jh.projects.cliApp.CliApp;
+import jh.projects.cliApp.SimpleCliApp;
+import jh.projects.cliApp.annotations.CliAppCommand;
 import java.io.IOException;
 import java.util.*;
 

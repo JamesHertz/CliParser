@@ -1,10 +1,10 @@
-package jh.parser.exeptions;
+package jh.projects.parser.exeptions;
 
-import jh.cliApp.exception.CliAppException;
-import jh.parser.Argument;
-import jh.parser.DataType;
+import jh.projects.cliApp.exception.CliAppException;
+import jh.projects.parser.Argument;
+import jh.projects.parser.DataType;
 
-import static jh.parser.exeptions.DTExpectedMessage.getExpectedMessage;
+import static jh.projects.parser.exeptions.DTExpectedMessage.getExpectedMessage;
 
 public class BadArgumentException extends CliAppException {
 

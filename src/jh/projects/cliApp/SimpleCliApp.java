@@ -1,16 +1,16 @@
-package jh.cliApp;
+package jh.projects.cliApp;
 
-import jh.cliApp.annotations.CliAppArg;
-import jh.cliApp.annotations.CliAppCommand;
-import jh.cliApp.exception.*;
-import jh.parser.Argument;
-import jh.parser.DataType;
+import jh.projects.cliApp.annotations.CliAppArg;
+import jh.projects.cliApp.annotations.CliAppCommand;
+import jh.projects.cliApp.exception.*;
+import jh.projects.parser.Argument;
+import jh.projects.parser.DataType;
 
-import jh.parser.Format;
-import jh.parser.ParserFormat;
-import jh.parser.exeptions.BadArgumentException;
+import jh.projects.parser.Format;
+import jh.projects.parser.ParserFormat;
+import jh.projects.parser.exeptions.BadArgumentException;
 
-import static jh.parser.LineParser.parseLine;
+import static jh.projects.parser.LineParser.parseLine;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ public class SimpleCliApp implements CliAPI{
         IDEA: use a map for managing this thing
      */
 
-    private final Map<String, jh.cliApp.CliCommand> commands;
+    private final Map<String, jh.projects.cliApp.CliCommand> commands;
     private final Object cmdStore;
     private boolean running;
 
@@ -112,7 +112,7 @@ public class SimpleCliApp implements CliAPI{
         String[] args = parseLine(stream);
         if(args.length > 0){
             String commandName = args[0];
-            jh.cliApp.CliCommand cmd = commands.get(commandName);
+            jh.projects.cliApp.CliCommand cmd = commands.get(commandName);
             // IDEAS: have a class named messages :)
             if(cmd == null) throw new UnknownCmdException(commandName);
 

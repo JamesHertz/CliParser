@@ -1,4 +1,4 @@
-package jh.cliApp.annotations;
+package jh.projects.cliApp.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

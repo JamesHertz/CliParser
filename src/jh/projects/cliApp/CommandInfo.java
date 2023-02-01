@@ -1,6 +1,6 @@
-package jh.cliApp;
+package jh.projects.cliApp;
 
-import jh.parser.Format;
+import jh.projects.parser.Format;
 
 public interface CommandInfo {
     String commandName();

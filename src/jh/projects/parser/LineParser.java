@@ -1,4 +1,4 @@
-package jh.parser;
+package jh.projects.parser;
 
 import java.io.IOException;
 import java.io.InputStream;

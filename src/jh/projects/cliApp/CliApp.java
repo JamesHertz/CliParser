@@ -1,4 +1,4 @@
-package jh.cliApp;
+package jh.projects.cliApp;
 
 import java.util.Iterator;
 

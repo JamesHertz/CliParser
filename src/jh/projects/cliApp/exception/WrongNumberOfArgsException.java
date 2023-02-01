@@ -1,4 +1,4 @@
-package jh.cliApp.exception;
+package jh.projects.cliApp.exception;
 
 public class WrongNumberOfArgsException extends CliAppException{
 
