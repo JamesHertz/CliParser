@@ -1,7 +1,7 @@
 package jh.cliApp;
 
-import jh.cliApp.annotations.CliCmdArg;
-import jh.cliApp.annotations.CliCommand;
+import jh.cliApp.annotations.CliAppArg;
+import jh.cliApp.annotations.CliAppCommand;
 import jh.cliApp.exception.*;
 import jh.parser.Argument;
 import jh.parser.DataType;
@@ -12,7 +12,6 @@ import jh.parser.exeptions.BadArgumentException;
 
 import static jh.parser.LineParser.parseLine;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -29,6 +28,7 @@ public class SimpleCliApp implements CliAPI{
 
     /*
         TODO:
+               - make a mini library with the colors
                - add a default command for exit
                - add documentation for the methods
                - build a set of useful libraries
@@ -42,7 +42,7 @@ public class SimpleCliApp implements CliAPI{
     }
 
 
-    private void generateCommand(CliCommand aux, Method m){
+    private void generateCommand(CliAppCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
 
         String cmd_name = transform_name(aux.value().isBlank() ? m.getName() : aux.value());
@@ -64,7 +64,7 @@ public class SimpleCliApp implements CliAPI{
             String argName = transform_name(p.getName());
             String argDesc = "";
 
-            CliCmdArg argInfo = p.getAnnotation(CliCmdArg.class);
+            CliAppArg argInfo = p.getAnnotation(CliAppArg.class);
             if(argInfo != null){
                 argName = argInfo.value();
                 argDesc = argInfo.desc();
@@ -78,16 +78,19 @@ public class SimpleCliApp implements CliAPI{
 
         // TODO: exception if command duplicated
         commands.put(cmd_name, new AppCmd(cmd_name, aux.desc(), format, m));
+        System.out.println(
+                getUsageMessage(commands.get(cmd_name)) // :)
+        );
     }
 
     private void getCommands(Class<?> container){
         for(Method m: container.getMethods()){
-            CliCommand aux = m.getAnnotation(CliCommand.class);
+            CliAppCommand aux = m.getAnnotation(CliAppCommand.class);
             if(aux != null) generateCommand(aux, m);
         }
     }
 
-    private Object[] parse_args(jh.cliApp.CliCommand cmd, String[] args) throws CliAppException {
+    private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
         Format fmt = cmd.argsFormat();
         if(fmt.size() != (args.length - 1)){ // because first arg is the command name
             throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
@@ -97,7 +100,7 @@ public class SimpleCliApp implements CliAPI{
         Object[] cmd_args = new Object[cmd.parametersSize()];
         if(cmd.receivesCliApi()) cmd_args[i++] = this;
 
-        for (Iterator<Argument> it = fmt.getFormat(); it.hasNext(); ++i) {
+        for (Iterator<Argument> it = fmt.getArguments(); it.hasNext(); ++i) {
             Argument arg = it.next();
             cmd_args[i] = arg.parse(args[i + 1]); // +1 because the first arg is the cmd name
         }
@@ -163,5 +166,22 @@ public class SimpleCliApp implements CliAPI{
                     .trim()
                     .replaceAll("\\s+", "-")
                     .toLowerCase();
+    }
+
+    public static String getUsageMessage(CliCommand cmd){
+        StringBuilder builder = new StringBuilder("usage: ");
+        Iterator<Argument> args = cmd.argsFormat().getArguments();
+        if(!args.hasNext())
+            builder.append("(none)");
+        else{
+            while(args.hasNext()){
+                Argument arg = args.next();
+                builder.append("<")
+                        .append(arg.name())
+                        .append("> ");
+            }
+            // TODO: print the info meessage :)
+        }
+        return builder.toString();
     }
 }

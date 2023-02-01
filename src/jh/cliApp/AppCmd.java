@@ -10,6 +10,7 @@ class AppCmd implements CliCommand {
     private final String cmdName, description;
     private final Format format;
     private final Method method;
+//    private final Object store;
 
     public AppCmd(String name, String description, Format parFormat, Method method){
         this.format = parFormat;

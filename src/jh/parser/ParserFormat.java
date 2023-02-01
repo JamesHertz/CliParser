@@ -26,7 +26,7 @@ public class ParserFormat implements Format {
     }
 
     @Override
-    public Iterator<Argument> getFormat() {
+    public Iterator<Argument> getArguments() {
         return format.iterator();
     }
 

@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CliCmdArg {
+public @interface CliAppArg {
     String value();
     String desc() default  "";
 }
