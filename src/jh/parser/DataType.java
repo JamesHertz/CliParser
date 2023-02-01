@@ -51,6 +51,11 @@ public enum DataType {
         return null;
     }
 
+    @Override
+    public String toString(){
+        return mType.toString();
+    }
+
     @FunctionalInterface
     interface ParseFunc{
         Object parse(String value) throws BadArgumentException;

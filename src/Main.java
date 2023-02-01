@@ -1,6 +1,7 @@
+import jh.cliApp.CliAPI;
 import jh.cliApp.CliApp;
 import jh.cliApp.SimpleCliApp;
-import jh.cliApp.annotations.Command;
+import jh.cliApp.annotations.CliCommand;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,12 +17,18 @@ public class Main {
         }
 
         // exception: NumberFormatException
-        @Command(name="add") // if name non specified, generate it :)
-        public void add(byte value){
+        @CliCommand
+        public void add_name( byte value){
            values.add((int) value);
         }
 
-        @Command(name="list") // if name non specified, generate it :)
+        @CliCommand
+        public void exit(CliAPI api){
+            System.out.println("quitting");
+            api.exit();
+        }
+
+        @CliCommand
         public void list(){
             Iterator<Integer> it = values.iterator();
             if(!it.hasNext())
@@ -42,7 +49,7 @@ public class Main {
         //}
         /*
             TODO:
-                -> generate name from the method name
+                X generate name from the method name
                 -> add special annotation to class
                 -> add default methods
                 -> errors when methods are overridden, etc
@@ -61,7 +68,10 @@ public class Main {
         //}
        CliApp app = new SimpleCliApp(new Auto());
        app.run();
-
+        // another-10
+        // jamesHetz =
+        //System.out.println(SimpleCliApp.genCmdName("helloWorld"));
+        //System.out.println(SimpleCliApp.genCmdName("hello world"));
         //for(;;){
         //    System.out.print(">> ");
         //    System.out.println(

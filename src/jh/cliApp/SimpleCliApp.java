@@ -1,9 +1,8 @@
 package jh.cliApp;
 
-import jh.cliApp.annotations.Command;
-import jh.cliApp.exception.CliAppException;
-import jh.cliApp.exception.UnknownCmdException;
-import jh.cliApp.exception.WrongNumberOfArgsException;
+import jh.cliApp.annotations.CliCmdArg;
+import jh.cliApp.annotations.CliCommand;
+import jh.cliApp.exception.*;
 import jh.parser.Argument;
 import jh.parser.DataType;
 
@@ -24,8 +23,9 @@ public class SimpleCliApp implements CliAPI{
         IDEA: use a map for managing this thing
      */
 
-    private final Map<String, CliCommand> commands;
+    private final Map<String, jh.cliApp.CliCommand> commands;
     private final Object cmdStore;
+    private boolean running;
 
     /*
         TODO:
@@ -36,17 +36,19 @@ public class SimpleCliApp implements CliAPI{
 
     public SimpleCliApp(Object cmdStore){
         this.cmdStore = cmdStore;
-        commands = new TreeMap<>();
+        this.running = false;
+        this.commands = new TreeMap<>();
         this.getCommands(cmdStore.getClass());
     }
 
 
-    private void generateCommand(Command aux, Method m){
+    private void generateCommand(CliCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
 
+        String cmd_name = transform_name(aux.value().isBlank() ? m.getName() : aux.value());
         // for debug
         String desc = aux.desc();
-        System.out.printf("adding command: %s; desc: %s\n", aux.name(), (desc.length() > 0) ? desc : "None");
+        System.out.printf("adding command: %s; desc: %s\n", cmd_name, (desc.length() > 0) ? desc : "None");
 
         int i = 0;
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++i;
@@ -56,29 +58,36 @@ public class SimpleCliApp implements CliAPI{
             Parameter p = parameters[i];
             DataType type = DataType.getType(p.getType());
 
-            // TODO: make a more specific exception
-            if(type == null) throw new RuntimeException("not primitive type provided");
+            if(type == null)
+                throw new InvalidParameterTypeException(m.getName(), p.getType());
 
-            format.addArgument(p.getName(), type);
+            String argName = transform_name(p.getName());
+            String argDesc = "";
 
-            // TODO: find a way to identify the type of parameters
-            System.out.println("\t - adding parameter: " + p.getName());
+            CliCmdArg argInfo = p.getAnnotation(CliCmdArg.class);
+            if(argInfo != null){
+                argName = argInfo.value();
+                argDesc = argInfo.desc();
+            }
+
+            format.addArgument(argName, argDesc, type);
+            System.out.println("\t - adding parameter: " + argName);
         }
 
         m.setAccessible(true); // help from stackoverflow
 
         // TODO: exception if command duplicated
-        commands.put(aux.name(), new AppCmd(aux.name(), aux.desc(), format, m));
+        commands.put(cmd_name, new AppCmd(cmd_name, aux.desc(), format, m));
     }
 
     private void getCommands(Class<?> container){
         for(Method m: container.getMethods()){
-            Command aux = m.getAnnotation(Command.class);
+            CliCommand aux = m.getAnnotation(CliCommand.class);
             if(aux != null) generateCommand(aux, m);
         }
     }
 
-    private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
+    private Object[] parse_args(jh.cliApp.CliCommand cmd, String[] args) throws CliAppException {
         Format fmt = cmd.argsFormat();
         if(fmt.size() != (args.length - 1)){ // because first arg is the command name
             throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
@@ -96,11 +105,11 @@ public class SimpleCliApp implements CliAPI{
         return cmd_args;
     }
 
-    private void run_commands(InputStream stream) throws IOException, CliAppException {
+    private void run_commands(InputStream stream) throws Exception {
         String[] args = parseLine(stream);
         if(args.length > 0){
             String commandName = args[0];
-            CliCommand cmd = commands.get(commandName);
+            jh.cliApp.CliCommand cmd = commands.get(commandName);
             // IDEAS: have a class named messages :)
             if(cmd == null) throw new UnknownCmdException(commandName);
 
@@ -112,9 +121,9 @@ public class SimpleCliApp implements CliAPI{
     @Override
     public void run() {
         final String prompt = ">> ";
-//        Scanner in = new Scanner(System.in);
+        this.running = true;
 
-        while(true){
+        while(this.running){
             System.out.print(prompt);
             try {
                 run_commands(System.in);
@@ -127,6 +136,7 @@ public class SimpleCliApp implements CliAPI{
                 System.out.printf("Error: %s\n", e.getMessage());
             } catch (Exception e){
                 e.printStackTrace();
+                System.exit(1);
             }
         }
     }
@@ -143,6 +153,15 @@ public class SimpleCliApp implements CliAPI{
 
     @Override
     public void exit() {
-        // do something :)
+        this.running = false;
+    }
+
+    // jamesHertz
+    public static String transform_name(String name){
+        return name.replaceAll("([a-z])([A-Z])", "$1 $2")
+                    .replaceAll("_", " ")
+                    .trim()
+                    .replaceAll("\\s+", "-")
+                    .toLowerCase();
     }
 }

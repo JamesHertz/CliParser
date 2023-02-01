@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ParserFormat implements Format {
 
-   private record CmdArgument(String name, DataType type) implements Argument {
+   private record CmdArgument(String name, String description, DataType type) implements Argument {
        @Override
         public Object parse(String value) throws BadArgumentException {
            try{
@@ -35,8 +35,8 @@ public class ParserFormat implements Format {
         return format.size();
     }
 
-    public void addArgument(String name, DataType type){
-         format.add(new CmdArgument(name, type));
+    public void addArgument(String name, String description, DataType type){
+         format.add(new CmdArgument(name, description, type));
     }
 
     @Override

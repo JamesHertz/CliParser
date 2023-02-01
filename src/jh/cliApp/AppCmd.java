@@ -48,14 +48,9 @@ class AppCmd implements CliCommand {
     }
 
     @Override
-    public void run(Object cmdStore, Object[] args) {
-        try{
-            Object self = (Modifier.isStatic(method.getModifiers())) ?  null : cmdStore;
-            method.invoke(self, args);
-        }catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
+    public void run(Object cmdStore, Object[] args) throws Exception{
+        Object self = (Modifier.isStatic(method.getModifiers())) ?  null : cmdStore;
+        method.invoke(self, args);
     }
 
 
