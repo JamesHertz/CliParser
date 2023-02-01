@@ -1,21 +1,4 @@
 # Simple CLI parser
 
 This is a simple parser to be used in interactive programs that requires constant user input.
-
-
-## TODO:
-- [X] Look at [this](https://commons.apache.org/proper/commons-cli/usage.html) and [this](https://stackoverflow.com/questions/55749924/java-making-a-simple-interactive-cli-app) // **I looked but I decided to build my own framework.**
-- [X] Finish ParserFormat implementation
-- [X] Make an arg exception
-- [X] Build the functional part of the framework
-- [ ] support all types
-- [ ] create some exceptions
-- [ ] look at the ideas
-
-
-## IDEAS
-- [ ] think about the context
-- [ ] think about options
-- [ ] Think about the exit process
-- [ ] Also think how to make it more comfortable
-- [ ] What about naming this think?
+There are things like [spring-shell](https://spring.io/projects/spring-shell) that does a great job, but I wanted to do something much more simpler and that fits my needs.
