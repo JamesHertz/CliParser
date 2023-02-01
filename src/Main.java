@@ -40,6 +40,13 @@ public class Main {
         //public static int getValue(int name, String other){
         //    return 0;
         //}
+        /*
+            TODO:
+                -> generate name from the method name
+                -> add special annotation to class
+                -> add default methods
+                -> errors when methods are overridden, etc
+         */
         public static void spoilSomething(){}
         //@Command(name="say")
         public static void saySomething(){}
