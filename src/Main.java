@@ -1,14 +1,10 @@
 import jh.cliApp.CliApp;
 import jh.cliApp.SimpleCliApp;
 import jh.cliApp.annotations.Command;
-import static jh.parser.exeptions.DTExpectedMessage.messages;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-//import static jh.parser.LineParser.parseLine;
 
 public class Main {
 
@@ -56,8 +52,8 @@ public class Main {
         //    System.out.printf("type: %s\nmsg: %s\n", key, messages.get(key));
         //    System.out.println("-------------------------------------");
         //}
-        //CliApp app = new SimpleCliApp(new Auto());
-        //app.run();
+       CliApp app = new SimpleCliApp(new Auto());
+       app.run();
 
         //for(;;){
         //    System.out.print(">> ");

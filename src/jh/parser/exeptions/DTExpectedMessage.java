@@ -6,7 +6,7 @@ import java.util.Map;
 public class DTExpectedMessage {
     private static final String DEFAULT_INTEGER_FMT = "an integer number in the range [%,d ; %,d]";
     private static final String DEFAULT_DECIMAL_FMT = "a decimal number in the range [%e ; %e]";
-    private static Map<Class<?>, String> messages = new HashMap<>(){{
+    private static final Map<Class<?>, String> messages = new HashMap<>(){{
         put(int.class, String.format(DEFAULT_INTEGER_FMT, Integer.MIN_VALUE, Integer.MAX_VALUE));
         put(short.class, String.format(DEFAULT_INTEGER_FMT, Short.MIN_VALUE, Short.MAX_VALUE));
         put(long.class, String.format(DEFAULT_INTEGER_FMT, Long.MIN_VALUE, Long.MAX_VALUE));

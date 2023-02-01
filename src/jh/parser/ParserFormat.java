@@ -1,5 +1,7 @@
 package jh.parser;
 
+import jh.parser.exeptions.BadArgumentException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,9 +10,13 @@ public class ParserFormat implements Format {
 
    private record CmdArgument(String name, DataType type) implements Argument {
        @Override
-        public Object parse(String value) {
-           return null;
-//            return type.parse(value);
+        public Object parse(String value) throws BadArgumentException {
+           try{
+               return type.parse(value);
+           } catch (BadArgumentException ex) {
+               ex.setArgument(this);
+               throw ex;
+           }
         }
    };
    private final List<Argument> format;
@@ -32,6 +38,14 @@ public class ParserFormat implements Format {
     public void addArgument(String name, DataType type){
          format.add(new CmdArgument(name, type));
     }
+
+    @Override
+    public String toString() {
+        // usage: name name name
+        // Error wrong parameter type <name>: 'value'
+        return super.toString();
+    }
+
     /*
     @Override
     public Object[] parseArgs(String[] args) {

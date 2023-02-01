@@ -9,6 +9,7 @@ import jh.parser.DataType;
 
 import jh.parser.Format;
 import jh.parser.ParserFormat;
+import jh.parser.exeptions.BadArgumentException;
 
 import static jh.parser.LineParser.parseLine;
 
@@ -115,9 +116,14 @@ public class SimpleCliApp implements CliAPI{
 
         while(true){
             System.out.print(prompt);
-            try{
+            try {
                 run_commands(System.in);
+            //}catch (BadArgumentException e){
+            //    System.out.println(e.getMessage());
             }catch (CliAppException e){
+                if(e instanceof BadArgumentException){
+                    System.out.println("usage: TODO!!");
+                }
                 System.out.printf("Error: %s\n", e.getMessage());
             } catch (Exception e){
                 e.printStackTrace();
