@@ -1,6 +1,8 @@
 import jh.projects.cliparser.cliApp.CliApp;
 import jh.projects.cliparser.cliApp.SimpleCliApp;
 
+import jh.projects.cliparser.cliApp.listeners.CliExitListener;
+
 import java.io.IOException;
 import examples.PeopleManager;
 

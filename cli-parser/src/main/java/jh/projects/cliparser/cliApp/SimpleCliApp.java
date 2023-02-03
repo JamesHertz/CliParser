@@ -3,6 +3,7 @@ package jh.projects.cliparser.cliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.exception.*;
+import jh.projects.cliparser.cliApp.listeners.*;
 import jh.projects.cliparser.parser.Argument;
 import jh.projects.cliparser.parser.DataType;
 
@@ -17,7 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-public class SimpleCliApp implements CliAPI{
+public class SimpleCliApp implements CliAPI, CliApp{
     /*
         IDEA: use a map for managing this thing
      */
@@ -39,8 +40,15 @@ public class SimpleCliApp implements CliAPI{
         this.running = false;
         this.commands = new TreeMap<>();
         this.getCommands(cmdStore.getClass());
+        this.addDefaultCommands();
     }
 
+    private void addDefaultCommands(){
+        for(Method m : DefaultCommands.class.getDeclaredMethods()){
+            // hi there :)
+            System.out.println(m.getName());
+        }
+    }
 
     private void generateCommand(CliAppCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
@@ -49,6 +57,8 @@ public class SimpleCliApp implements CliAPI{
         // for debug
         String desc = aux.desc();
         System.out.printf("adding command: %s; desc: %s\n", cmd_name, (desc.length() > 0) ? desc : "None");
+
+        // TODO: add exception here :)
 
         int i = 0;
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++i;
@@ -108,6 +118,7 @@ public class SimpleCliApp implements CliAPI{
         return cmd_args;
     }
 
+    // TODO: give a method in the api allowing executing other commands
     private void run_commands(InputStream stream) throws Exception {
         String[] args = parseLine(stream);
         if(args.length > 0){
@@ -124,7 +135,11 @@ public class SimpleCliApp implements CliAPI{
     @Override
     public void run() {
         final String prompt = ">> ";
+
         this.running = true;
+        if(this.cmdStore instanceof CliRunListener){
+            ((CliRunListener) cmdStore).onRun(this);
+        }
 
         while(this.running){
             System.out.print(prompt);
@@ -142,6 +157,7 @@ public class SimpleCliApp implements CliAPI{
                 System.exit(1);
             }
         }
+
     }
 
     @Override
@@ -154,9 +170,10 @@ public class SimpleCliApp implements CliAPI{
         return cmdStore;
     }
 
-    @Override
     public void exit() {
         this.running = false;
+        if(this.cmdStore instanceof CliExitListener)
+            ((CliExitListener) cmdStore).onExit(this);
     }
 
     // jamesHertz
