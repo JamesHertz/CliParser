@@ -1,0 +1,13 @@
+jar {
+    manifest {
+       attributes 'Main-Class': 'Main'
+    }
+    // what does thing do??
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+   implementation project(':cli-parser')
+}

@@ -1,12 +1,3 @@
- plugins {
-    id 'java'
+subprojects {
+    apply plugin: 'java'
 }
-
- // only for testing reasons, this will then be removed :)
-jar {
-    manifest {
-        attributes 'Main-Class': 'jh.projects.Main'
-    }
-}
- group 'jh.projects'
- version '1.0-SNAPSHOT'
