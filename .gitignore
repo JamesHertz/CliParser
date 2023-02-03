@@ -1,6 +1,7 @@
 /out
 SimpleCmdParser.iml
 /.idea
+/bin
 # Ignore Gradle project-specific cache directory
 .gradle
 

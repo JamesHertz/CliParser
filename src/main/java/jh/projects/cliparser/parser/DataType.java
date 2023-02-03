@@ -1,7 +1,7 @@
-package jh.projects.parser;
+package jh.projects.cliparser.parser;
 
 
-import jh.projects.parser.exeptions.BadArgumentException;
+import jh.projects.cliparser.parser.exeptions.BadArgumentException;
 
 public enum DataType {
 

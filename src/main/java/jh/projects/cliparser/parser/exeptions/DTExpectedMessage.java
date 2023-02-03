@@ -1,4 +1,4 @@
-package jh.projects.parser.exeptions;
+package jh.projects.cliparser.parser.exeptions;
 
 import java.util.HashMap;
 import java.util.Map;

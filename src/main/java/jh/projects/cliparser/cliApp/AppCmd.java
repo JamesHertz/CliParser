@@ -1,6 +1,6 @@
-package jh.projects.cliApp;
+package jh.projects.cliparser.cliApp;
 
-import jh.projects.parser.Format;
+import jh.projects.cliparser.parser.Format;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 

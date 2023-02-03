@@ -1,4 +1,4 @@
-package jh.projects.parser;
+package jh.projects.cliparser.parser;
 
 
 import java.util.Iterator;

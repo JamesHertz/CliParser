@@ -1,4 +1,4 @@
-package jh.projects.cliApp;
+package jh.projects.cliparser.cliApp;
 
 import java.lang.reflect.Method;
 

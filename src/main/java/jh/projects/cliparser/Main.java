@@ -1,9 +1,9 @@
-package jh.projects;
+package jh.projects.cliparser;
 
-import jh.projects.cliApp.CliAPI;
-import jh.projects.cliApp.CliApp;
-import jh.projects.cliApp.SimpleCliApp;
-import jh.projects.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.CliAPI;
+import jh.projects.cliparser.cliApp.CliApp;
+import jh.projects.cliparser.cliApp.SimpleCliApp;
+import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import java.io.IOException;
 import java.util.*;
 
@@ -120,6 +120,8 @@ public class Main {
         }
     }
 
+    // TODO: find a way to place the examples aside
+    // you can start digging here :) https://docs.gradle.org/current/userguide/writing_build_scripts.html#sec:the_gradle_build_language
     public static void main(String[] args) throws IOException {
         //CliApp app = new SimpleCliApp(new Auto());
         CliApp app = new SimpleCliApp(new PeopleManager());

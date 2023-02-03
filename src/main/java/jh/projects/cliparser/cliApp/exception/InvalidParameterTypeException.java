@@ -1,6 +1,6 @@
-package jh.projects.cliApp.exception;
+package jh.projects.cliparser.cliApp.exception;
 
-import jh.projects.parser.DataType;
+import jh.projects.cliparser.parser.DataType;
 
 import java.util.Arrays;
 
