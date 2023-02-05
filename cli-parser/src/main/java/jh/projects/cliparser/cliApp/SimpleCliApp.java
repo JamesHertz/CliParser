@@ -3,6 +3,8 @@ package jh.projects.cliparser.cliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
+import jh.projects.cliparser.cliApp.api.CliTable;
+import jh.projects.cliparser.cliApp.api.Table;
 import jh.projects.cliparser.cliApp.exception.*;
 import jh.projects.cliparser.cliApp.listeners.*;
 import jh.projects.cliparser.parser.Argument;
@@ -15,6 +17,7 @@ import jh.projects.cliparser.parser.exeptions.BadArgumentException;
 import static jh.projects.cliparser.parser.LineParser.parseLine;
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -26,7 +29,30 @@ public class SimpleCliApp implements CliAPI, CliApp{
     private final Object cmdStore;
     private boolean running;
 
-    static class DefaultCliCommands {}
+    /*
+    class Api implements CliAPI{
+
+        @Override
+        public Object getCmdStore() {
+            return null;
+        }
+
+        @Override
+        public Iterator<CommandInfo> getAllCommands() {
+            return SimpleCliApp.this.getAllCommands();
+        }
+
+        @Override
+        public CliTable createTable(String[] headers) {
+            return new Table(headers);
+        }
+
+        @Override
+        public void exit() {
+            SimpleCliApp.this.exit();
+        }
+    }
+     */
 
     /*
         TODO:
@@ -89,6 +115,11 @@ public class SimpleCliApp implements CliAPI, CliApp{
             ((CliExitListener) cmdStore).onExit(this);
     }
 
+
+    @Override
+    public CliTable createTable(String[] headers) {
+        return new Table(headers);
+    }
 
     private void extractCommands(Class<?> container){
         for(Method m: container.getMethods()){
@@ -181,4 +212,5 @@ public class SimpleCliApp implements CliAPI, CliApp{
     private CliCommand getCommand(String commandName){
         return (CliCommand) commands.get(commandName);
     }
+
 }

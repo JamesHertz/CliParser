@@ -3,6 +3,7 @@ package jh.projects.cliparser.cliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
+import jh.projects.cliparser.cliApp.api.CliTable;
 
 import java.util.Iterator;
 
@@ -21,27 +22,15 @@ class DefaultCommands {
 
     @CliAppCommand(desc = "lists all commands")
     public static void help(CliAPI api){
-        /*
-            CliTable table = api.createTable(3) // number of colors
-            table.setHeaders("Commands", "Description");
-            // table.setSeparator("-");
-            Iterator it = api.getAllCommands();
-            while(it.hasNext()){
-                CommandInfo info = it.next();
-                table.add(info.name(), "-", info.description())
-            }
-            table.print()
-         */
-
-        Iterator<CommandInfo> info = api.getAllCommands();
-
-        System.out.println("Commands  Description");
-        while(info.hasNext()){
-            CommandInfo cmd = info.next();
-            String desc = cmd.getDescription();
-            System.out.printf("%s - %s\n", cmd.getName(), desc.isBlank() ? "(none)" : desc);
+        CliTable table = api.createTable(new String[] {"Commands", "Description"});
+        table.setDelimiter(1, " - ");
+        Iterator<CommandInfo> it = api.getAllCommands();
+        while(it.hasNext()){
+            CommandInfo info = it.next();
+            String desc = info.getDescription();
+            table.add(info.getName(), desc.isEmpty() ? "----" : desc);
         }
-
+        table.print();
     }
 
     @CliAppCommand(desc = "exits the program")

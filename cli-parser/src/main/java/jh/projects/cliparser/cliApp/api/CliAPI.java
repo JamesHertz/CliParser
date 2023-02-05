@@ -8,5 +8,10 @@ public interface CliAPI {
 
     Object getCmdStore(); // should I deprecate it??
     Iterator<CommandInfo> getAllCommands();
+    CliTable createTable(String[] headers);
     void exit();
+    /*
+        CliTable createTable(int row, int col);
+
+     */
 }
