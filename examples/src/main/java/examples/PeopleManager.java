@@ -26,9 +26,6 @@ public class PeopleManager {
         }
     }
 
-    @CliAppCommand("add-person")
-    void james(){}
-
     @CliAppCommand
     public void listPeople(){
         Iterator<Person> it = people.values().iterator();
@@ -51,7 +48,7 @@ public class PeopleManager {
             System.out.printf("Person '%s' removed with success\n", err.name);
     }
 
-    @CliAppCommand("change")
+    @CliAppCommand(key = "change")
     public void changeAge(String name, int new_age){
         var person = people.get(name);
         if(person == null)
@@ -62,9 +59,4 @@ public class PeopleManager {
         }
     }
 
-    @CliAppCommand
-    public void exit(CliAPI api){
-        System.out.println("quitting");
-        api.exit();
-    }
 }

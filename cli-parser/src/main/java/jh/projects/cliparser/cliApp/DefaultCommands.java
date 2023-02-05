@@ -2,7 +2,6 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
-import jh.projects.cliparser.parser.Argument;
 
 import java.util.Iterator;
 
@@ -12,7 +11,7 @@ class DefaultCommands {
     public static void info(
             CliAPI api,
             @CliAppArg(
-                    value="command-name",
+                    key ="command-name",
                     desc="the command name"
             )
             String command){
@@ -40,7 +39,7 @@ class DefaultCommands {
         while(info.hasNext()){
             CommandInfo cmd = info.next();
             String desc = cmd.description();
-            System.out.printf("%s - %s\n", cmd.commandName(), desc.isBlank() ? "(node)" : desc);
+            System.out.printf("%s - %s\n", cmd.commandName(), desc.isBlank() ? "(none)" : desc);
         }
 
     }

@@ -3,7 +3,7 @@ package jh.projects.cliparser.cliApp.exception;
 import java.lang.reflect.Method;
 
 public class DuplicatedCommandException extends CliAppCompilingException{
-    private static final String MSG = "Commanded %s defined twice by method %s and %s.";
+    private static final String MSG = "Commanded '%s' defined twice by method '%s' and '%s'.";
     private final String cmd_name;
     private final Method method1, method2;
 

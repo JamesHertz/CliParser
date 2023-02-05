@@ -12,7 +12,6 @@ import jh.projects.cliparser.parser.ParserFormat;
 import jh.projects.cliparser.parser.exeptions.BadArgumentException;
 
 import static jh.projects.cliparser.parser.LineParser.parseLine;
-import static jh.projects.cliparser.cliApp.Utils.*;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -45,7 +44,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
     private void generateCommand(CliAppCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
 
-        String cmd_name = transform_name(aux.value().isBlank() ? m.getName() : aux.value());
+        String cmd_name = transform_name(aux.key().isBlank() ? m.getName() : aux.key());
+        System.out.println(cmd_name);
         {
            CliCommand cmd = getCommand(cmd_name);
            if(cmd != null){
@@ -71,7 +71,7 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
             CliAppArg argInfo = p.getAnnotation(CliAppArg.class);
             if(argInfo != null){
-                argName = argInfo.value();
+                argName = argInfo.key();
                 argDesc = argInfo.desc();
             }
 

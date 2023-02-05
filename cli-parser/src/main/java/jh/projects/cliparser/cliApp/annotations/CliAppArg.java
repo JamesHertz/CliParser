@@ -5,6 +5,6 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CliAppArg {
-    String value() default "";
+    String key() default "";
     String desc() default  "";
 }
