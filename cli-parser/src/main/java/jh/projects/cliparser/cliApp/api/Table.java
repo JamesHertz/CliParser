@@ -8,6 +8,7 @@ import java.util.List;
 // TODO: this thing is broken just fix it :)
 public class Table implements CliTable{
 
+    private static final String DEFAULT_DELIMITER = " ";
     private List<String> cells;
     private String[] delimiters;
     private int[] max_sizes;
@@ -62,6 +63,7 @@ public class Table implements CliTable{
         for(int i = 0; i < cols; ++i) setDelimiter(i, del);
     }
 
+
     @Override
     public void print() {
 
@@ -69,17 +71,18 @@ public class Table implements CliTable{
         for(int r = 0; r < this.rows(); ++r){
             for(int c = 0; c < this.cols() && it.hasNext(); ++c){
                 String value = it.next();
-                 if(delimiters[c] != null) {
-                     String del = delimiters[c];
-                     if (r == 0) // I am printing the headers
-                         del = String.format("%" + del.length() + "s", " ");
-                     System.out.print(del);
-                 }
+                System.out.print(getDelimiter(r, c));
                 System.out.printf("%-" + max_sizes[c] + "s", value);
             }
             if(r == 0) System.out.println(); // :)
             System.out.println();
         }
+    }
+
+    private String getDelimiter(int col, int row){
+         String del = delimiters[col] == null ? DEFAULT_DELIMITER : delimiters[col];
+         if (row != 0) return del;  // it's not a header :)
+         return String.format("%" + del.length() + "s", " ");
     }
 
 }
