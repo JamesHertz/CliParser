@@ -38,20 +38,19 @@ public class SimpleCliApp implements CliAPI, CliApp{
         this.running = false;
         this.commands = new TreeMap<>();
 
-        this.getCommands(cmdStore.getClass());
         this.getCommands(DefaultCommands.class);  // add the default commands :)
+        this.getCommands(cmdStore.getClass());
     }
 
     private void generateCommand(CliAppCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
 
         String cmd_name = transform_name(aux.key().isBlank() ? m.getName() : aux.key());
+
         {
            CliCommand cmd = getCommand(cmd_name);
-           if(cmd != null){
-               if(m.getDeclaringClass() == DefaultCommands.class) return;
-               else throw new DuplicatedCommandException(cmd_name, cmd.commandMethod(), m);
-           }
+           if(cmd != null && m.getDeclaringClass() == cmd.commandMethod().getDeclaringClass())
+               throw new DuplicatedCommandException(cmd_name, cmd.commandMethod(), m);
         }
 
         int i = 0;
