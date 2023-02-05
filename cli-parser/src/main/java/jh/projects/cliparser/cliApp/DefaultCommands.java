@@ -20,15 +20,14 @@ class DefaultCommands {
 
     @CliAppCommand(desc = "lists all commands")
     public static void help(CliAPI api){
-        // use a table kakaka
         /*
-            CliTable table = api.createTable(2) // number of colors
+            CliTable table = api.createTable(3) // number of colors
             table.setHeaders("Commands", "Description");
-            table.setSeparator("-");
+            // table.setSeparator("-");
             Iterator it = api.getAllCommands();
             while(it.hasNext()){
                 CommandInfo info = it.next();
-                table.add(info.name(), info.description())
+                table.add(info.name(), "-", info.description())
             }
             table.print()
          */
@@ -38,8 +37,8 @@ class DefaultCommands {
         System.out.println("Commands  Description");
         while(info.hasNext()){
             CommandInfo cmd = info.next();
-            String desc = cmd.description();
-            System.out.printf("%s - %s\n", cmd.commandName(), desc.isBlank() ? "(none)" : desc);
+            String desc = cmd.getDescription();
+            System.out.printf("%s - %s\n", cmd.getName(), desc.isBlank() ? "(none)" : desc);
         }
 
     }

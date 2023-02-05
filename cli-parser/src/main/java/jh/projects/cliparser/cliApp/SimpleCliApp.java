@@ -25,6 +25,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
     private final Object cmdStore;
     private boolean running;
 
+    static class DefaultCliCommands {}
+
     /*
         TODO:
                X add a default command for exit
@@ -38,88 +40,10 @@ public class SimpleCliApp implements CliAPI, CliApp{
         this.running = false;
         this.commands = new TreeMap<>();
 
-        this.getCommands(DefaultCommands.class);  // add the default commands :)
-        this.getCommands(cmdStore.getClass());
+        this.extractCommands(DefaultCommands.class);  // add the default commands :)
+        this.extractCommands(cmdStore.getClass());
     }
 
-    private void generateCommand(CliAppCommand aux, Method m){
-        Parameter[] parameters = m.getParameters();
-
-        String cmd_name = transform_name(aux.key().isBlank() ? m.getName() : aux.key());
-
-        {
-           CliCommand cmd = getCommand(cmd_name);
-           if(cmd != null && m.getDeclaringClass() == cmd.commandMethod().getDeclaringClass())
-               throw new DuplicatedCommandException(cmd_name, cmd.commandMethod(), m);
-        }
-
-        int i = 0;
-        if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++i;
-        Format format = new ParserFormat(parameters.length - i);
-
-        for(; i < parameters.length; ++i){
-            Parameter p = parameters[i];
-            DataType type = DataType.getType(p.getType());
-
-            if(type == null)
-                throw new InvalidParameterTypeException(m.getName(), p.getType());
-
-            String argName = p.getName();
-            String argDesc = "";
-
-            CliAppArg argInfo = p.getAnnotation(CliAppArg.class);
-            if(argInfo != null){
-                argName = argInfo.key();
-                argDesc = argInfo.desc();
-            }
-
-            format.addArgument(transform_name(argName), argDesc, type);
-        }
-
-        m.setAccessible(true); // help from stackoverflow
-        Object cmd_store = (Modifier.isStatic(m.getModifiers())) ? null : this.cmdStore;
-        commands.put(cmd_name, new AppCmd(cmd_name, aux.desc(), format, m, cmd_store));
-    }
-
-    private void getCommands(Class<?> container){
-        for(Method m: container.getMethods()){
-            CliAppCommand aux = m.getAnnotation(CliAppCommand.class);
-            if(aux != null) generateCommand(aux, m);
-        }
-    }
-
-    private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
-        Format fmt = cmd.argsFormat();
-        if(fmt.size() != (args.length - 1)){ // because first arg is the command name
-            throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
-        }
-
-        int cmd_idx = 0, arg_idx = 1; // arg_idx is 1 because the first arg is the cmd name
-        Object[] cmd_args = new Object[cmd.parametersSize()];
-        if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
-
-        for (Iterator<Argument> it = fmt.getArguments(); it.hasNext();) {
-            Argument arg = it.next();
-            cmd_args[cmd_idx++] = arg.parse(args[arg_idx++]);
-        }
-
-        return cmd_args;
-    }
-
-    // TODO: give a method in the api allowing executing other commands
-    private void run_commands(InputStream stream) throws Exception {
-        String[] args = parseLine(stream);
-        if(args.length > 0){
-            String commandName = args[0];
-            CliCommand cmd = getCommand(commandName);// commands.get(commandName);
-            // IDEAS: have a class named messages :)
-            if(cmd == null) throw new UnknownCmdException(commandName);
-
-            Object[] cmd_args = parse_args(cmd, args);
-            cmd.run(cmd_args);
-        }
-
-    }
     @Override
     public void run() {
         final String prompt = ">> ";
@@ -129,7 +53,7 @@ public class SimpleCliApp implements CliAPI, CliApp{
             ((CliRunListener) cmdStore).onRun(this);
         }
 
-        while(this.running){
+        while(this.running){ // exit in ctrl+d ??
             System.out.print(prompt);
             try {
                 run_commands(System.in);
@@ -158,13 +82,90 @@ public class SimpleCliApp implements CliAPI, CliApp{
         return cmdStore;
     }
 
+    @Override
     public void exit() {
         this.running = false;
         if(this.cmdStore instanceof CliExitListener)
             ((CliExitListener) cmdStore).onExit(this);
     }
 
-    // jamesHertz
+
+    private void extractCommands(Class<?> container){
+        for(Method m: container.getMethods()){
+            CliAppCommand aux = m.getAnnotation(CliAppCommand.class);
+            if(aux != null) addCommand(aux, m);
+        }
+    }
+    private void addCommand(CliAppCommand aux, Method m){
+        Parameter[] parameters = m.getParameters();
+        String cmd_name = transform_name(aux.key().isBlank() ? m.getName() : aux.key());
+
+        {
+           CliCommand cmd = getCommand(cmd_name);
+           if(cmd != null && cmd.getMethod().getDeclaringClass() != DefaultCommands.class)
+               throw new DuplicatedCommandException(cmd_name, cmd.getMethod(), m);
+        }
+
+        int idx = 0;
+        if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++idx;
+        Format format = new ParserFormat(parameters.length - idx);
+
+        for(; idx < parameters.length; ++idx){
+            Parameter p = parameters[idx];
+            DataType type = DataType.getType(p.getType());
+
+            if(type == null)
+                throw new InvalidParameterTypeException(m.getName(), p.getType());
+
+            String argName = p.getName();
+            String argDesc = "";
+
+            CliAppArg argInfo = p.getAnnotation(CliAppArg.class);
+            if(argInfo != null){
+                argName = argInfo.key();
+                argDesc = argInfo.desc();
+            }
+
+            format.addArgument(transform_name(argName), argDesc, type);
+        }
+
+        m.setAccessible(true); // help from stackoverflow
+        Object cmd_store = (Modifier.isStatic(m.getModifiers())) ? null : this.cmdStore;
+        commands.put(cmd_name, new Command(cmd_name, aux.desc(), format, m, cmd_store));
+    }
+
+    private void run_commands(InputStream stream) throws Exception {
+        String[] args = parseLine(stream);
+        if(args.length > 0){
+            String commandName = args[0];
+            CliCommand cmd = getCommand(commandName);
+            // IDEAS: have a class named messages :)
+            if(cmd == null) throw new UnknownCmdException(commandName);
+
+            Object[] cmd_args = parse_args(cmd, args);
+            cmd.run(cmd_args);
+        }
+
+    }
+
+    private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
+        Format fmt = cmd.getArgsFormat();
+        if(fmt.size() != (args.length - 1)){ // because first arg is the command name
+            throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
+        }
+
+        int cmd_idx = 0, arg_idx = 1; // arg_idx is 1 because the first arg is the cmd name
+        Object[] cmd_args = new Object[cmd.getParsSize()];
+        if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
+
+        for (Iterator<Argument> it = fmt.getArguments(); it.hasNext();) {
+            Argument arg = it.next();
+            cmd_args[cmd_idx++] = arg.parse(args[arg_idx++]);
+        }
+
+        return cmd_args;
+    }
+
     private String transform_name(String name){
         return name.replaceAll("([a-z])([A-Z])", "$1 $2")
                     .replaceAll("_", " ")
