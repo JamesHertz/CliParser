@@ -36,7 +36,7 @@ public class Table implements CliTable{
     @Override
     public void add(Object ...values) {
         for(Object value : values){
-            String str_value = value.toString();
+            String str_value = "" + value;
             int col = counter % cols;
             max_sizes[col] = Math.max(max_sizes[col], str_value.length());
             // problems :)
