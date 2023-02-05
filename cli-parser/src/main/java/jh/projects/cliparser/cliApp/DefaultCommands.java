@@ -2,12 +2,13 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.parser.Argument;
 
 import java.util.Iterator;
 
 class DefaultCommands {
 
-    @CliAppCommand("prints the a given command information")
+    @CliAppCommand(desc = "prints the a given command information")
     public static void info(
             CliAPI api,
             @CliAppArg(
@@ -15,11 +16,7 @@ class DefaultCommands {
                     desc="the command name"
             )
             String command){
-        // this means I need to get command information
-        /*
-         */
-
-
+        System.out.println("TODO!!!");
     }
 
     @CliAppCommand(desc = "lists all commands")
@@ -37,7 +34,14 @@ class DefaultCommands {
             table.print()
          */
 
-        Iterator<? extends CommandInfo> info = api.getAllCommands();
+        Iterator<CommandInfo> info = api.getAllCommands();
+
+        System.out.println("Commands  Description");
+        while(info.hasNext()){
+            CommandInfo cmd = info.next();
+            String desc = cmd.description();
+            System.out.printf("%s - %s\n", cmd.commandName(), desc.isBlank() ? "(node)" : desc);
+        }
 
     }
 

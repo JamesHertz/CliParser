@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public interface CliAPI {
 
-    Object getCmdStore();
-    Iterator< ? extends CommandInfo> getAllCommands();
+    Object getCmdStore(); // should I deprecate it??
+    Iterator<CommandInfo> getAllCommands();
     void exit();
 }

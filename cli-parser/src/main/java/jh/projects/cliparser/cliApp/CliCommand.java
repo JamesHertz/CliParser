@@ -7,5 +7,5 @@ interface CliCommand extends CommandInfo{
     Method commandMethod();
     boolean receivesCliApi();
     int parametersSize();
-    void run(Object cmdStore, Object args[]) throws Exception;
+    void run(Object[] args) throws Exception;
 }

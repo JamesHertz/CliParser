@@ -8,6 +8,12 @@ jar {
     }
 }
 
+// adding flags to the java compiler
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "-parameters"
+}
+
 dependencies {
    implementation project(':cli-parser')
 }
+

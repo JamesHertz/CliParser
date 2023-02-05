@@ -1,6 +1,6 @@
 /out
 SimpleCmdParser.iml
 /.idea
-/bin
+bin
 .gradle
 build

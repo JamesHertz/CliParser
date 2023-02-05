@@ -26,6 +26,9 @@ public class PeopleManager {
         }
     }
 
+    @CliAppCommand("add-person")
+    void james(){}
+
     @CliAppCommand
     public void listPeople(){
         Iterator<Person> it = people.values().iterator();
