@@ -79,7 +79,7 @@ public class Table implements CliTable{
         }
     }
 
-    private String getDelimiter(int col, int row){
+    private String getDelimiter(int row, int col){
          String del = delimiters[col] == null ? DEFAULT_DELIMITER : delimiters[col];
          if (row != 0) return del;  // it's not a header :)
          return String.format("%" + del.length() + "s", " ");
