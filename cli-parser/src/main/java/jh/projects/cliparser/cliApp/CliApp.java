@@ -1,8 +1,8 @@
 package jh.projects.cliparser.cliApp;
 
-import java.util.Iterator;
+import jh.projects.cliparser.cliApp.api.CliAPI;
 
-public interface CliApp extends CliAPI{
+public interface CliApp extends CliAPI {
     // void start();
     // void stop();
     // void exit();

@@ -1,9 +1,21 @@
 package jh.projects.cliparser.cliApp.exception;
 
-public class CliAppException extends  Exception{
+import jh.projects.cliparser.cliApp.CommandInfo;
+
+public /*abstract*/ class CliAppException extends  Exception{
+    private CommandInfo cmd;
+    public CliAppException(){}
+
     public CliAppException(String message){
         super(message);
     }
 
-    public CliAppException(){}
+    public CliAppException setCommand(CommandInfo cmd){
+        this.cmd = cmd;
+        return this;
+    }
+
+    public CommandInfo getRelatedCommand(){
+        return cmd;
+    }
 }

@@ -87,7 +87,7 @@ public class BadArgumentException extends CliAppException {
      */
     // idea: do an utils library go handle this :)
     // and highlight the second str red
-    private static final String MSG = "Bad argument type for \033[1;37m<%s>\033[0m: '%s'\nExpected %s";
+    private static final String MSG = "Bad argument for \033[1;37m<%s>\033[0m: '%s'\nExpected %s";
     private final String provided;
     private Argument argument;
 

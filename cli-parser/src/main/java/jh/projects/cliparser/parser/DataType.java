@@ -21,13 +21,10 @@ public enum DataType {
         return value.charAt(0);
     }, char.class);
 
-
-    private final String typeDesc;
     private final ParseFunc argParser;
     private final Class<?> mType;
 
     DataType(ParseFunc argParser, Class<?> mType){
-        this.typeDesc = this.name().toLowerCase();
         this.argParser = argParser;
         this.mType = mType;
     }

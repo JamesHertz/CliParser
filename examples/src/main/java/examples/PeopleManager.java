@@ -3,7 +3,7 @@ package examples;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Iterator;
-import jh.projects.cliparser.cliApp.CliAPI;
+
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 
 public class PeopleManager {

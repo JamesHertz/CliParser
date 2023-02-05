@@ -1,4 +1,6 @@
-package jh.projects.cliparser.cliApp;
+package jh.projects.cliparser.cliApp.api;
+
+import jh.projects.cliparser.cliApp.CommandInfo;
 
 import java.util.Iterator;
 

@@ -21,6 +21,10 @@ public class ParserFormat implements Format {
    };
    private final List<Argument> format;
 
+    public ParserFormat(Argument ...args) {
+        format = List.of(args);
+    }
+
     public ParserFormat(int size){
         this.format = new ArrayList<>(size);
     }

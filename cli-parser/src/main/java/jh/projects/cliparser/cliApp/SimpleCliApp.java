@@ -2,6 +2,7 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.api.CliAPI;
 import jh.projects.cliparser.cliApp.exception.*;
 import jh.projects.cliparser.cliApp.listeners.*;
 import jh.projects.cliparser.parser.Argument;
@@ -57,12 +58,11 @@ public class SimpleCliApp implements CliAPI, CliApp{
             System.out.print(prompt);
             try {
                 run_commands(System.in);
-            //}catch (BadArgumentException e){
-            //    System.out.println(e.getMessage());
-            }catch (CliAppException e){
-                if(e instanceof BadArgumentException){
-                    System.out.println("usage: TODO!!");
-                }
+            }catch (BadArgumentException | WrongNumberOfArgsException e){
+                String usage = e.getRelatedCommand().getUsage();
+                if(!usage.isEmpty()) System.out.printf("usage: %s\n", usage);
+                System.out.printf("Error: %s\n", e.getMessage());
+            } catch (CliAppException e){
                 System.out.printf("Error: %s\n", e.getMessage());
             } catch (Exception e){
                 e.printStackTrace();
@@ -108,8 +108,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
         int idx = 0;
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++idx;
-        Format format = new ParserFormat(parameters.length - idx);
 
+        Format format = new ParserFormat(parameters.length - idx);
         for(; idx < parameters.length; ++idx){
             Parameter p = parameters[idx];
             DataType type = DataType.getType(p.getType());
@@ -150,20 +150,24 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
     private Object[] parse_args(CliCommand cmd, String[] args) throws CliAppException {
         Format fmt = cmd.getArgsFormat();
-        if(fmt.size() != (args.length - 1)){ // because first arg is the command name
-            throw new WrongNumberOfArgsException(fmt.size(), args.length - 1);
+        try{
+             if(fmt.size() != (args.length - 1)){ // because first arg is the command name
+                throw new WrongNumberOfArgsException(fmt.size(), args.length - 1).setCommand(cmd);
+            }
+
+            int cmd_idx = 0, arg_idx = 1; // arg_idx is 1 because the first arg is the cmd name
+            Object[] cmd_args = new Object[cmd.getParsSize()];
+            if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
+
+            for (Iterator<Argument> it = fmt.getArguments(); it.hasNext();) {
+                Argument arg = it.next();
+                cmd_args[cmd_idx++] = arg.parse(args[arg_idx++]);
+            }
+
+            return cmd_args;
+        }catch (CliAppException e){
+            throw e.setCommand(cmd);
         }
-
-        int cmd_idx = 0, arg_idx = 1; // arg_idx is 1 because the first arg is the cmd name
-        Object[] cmd_args = new Object[cmd.getParsSize()];
-        if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
-
-        for (Iterator<Argument> it = fmt.getArguments(); it.hasNext();) {
-            Argument arg = it.next();
-            cmd_args[cmd_idx++] = arg.parse(args[arg_idx++]);
-        }
-
-        return cmd_args;
     }
 
     private String transform_name(String name){

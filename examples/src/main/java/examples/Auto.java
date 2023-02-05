@@ -1,7 +1,7 @@
 package examples;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
-import jh.projects.cliparser.cliApp.CliAPI;
+import jh.projects.cliparser.cliApp.api.CliAPI;
 
 import java.util.ArrayList;
 import java.util.Iterator;

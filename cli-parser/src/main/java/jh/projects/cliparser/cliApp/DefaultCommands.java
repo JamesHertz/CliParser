@@ -2,6 +2,7 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.api.CliAPI;
 
 import java.util.Iterator;
 
