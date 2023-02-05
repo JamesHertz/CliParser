@@ -53,7 +53,7 @@ class AppCmd implements CliCommand {
     @Override
     public void run(Object[] args) throws Exception{
 //         Object self = (Modifier.isStatic(method.getModifiers())) ?  null : store;
-        // if store is null means it's an static method :)
+        // if store is null means it's a static method :)
         method.invoke(store, args);
     }
 }

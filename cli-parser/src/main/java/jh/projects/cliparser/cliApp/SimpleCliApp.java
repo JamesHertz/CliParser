@@ -27,8 +27,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
     /*
         TODO:
+               X add a default command for exit
                - make a mini library with the colors
-               - add a default command for exit
                - add documentation for the methods
                - build a set of useful libraries
     */
@@ -37,15 +37,15 @@ public class SimpleCliApp implements CliAPI, CliApp{
         this.cmdStore = cmdStore;
         this.running = false;
         this.commands = new TreeMap<>();
+
         this.getCommands(cmdStore.getClass());
-        this.getCommands(DefaultCommands.class); // by now :)
+        this.getCommands(DefaultCommands.class);  // add the default commands :)
     }
 
     private void generateCommand(CliAppCommand aux, Method m){
         Parameter[] parameters = m.getParameters();
 
         String cmd_name = transform_name(aux.key().isBlank() ? m.getName() : aux.key());
-        System.out.println(cmd_name);
         {
            CliCommand cmd = getCommand(cmd_name);
            if(cmd != null){
@@ -53,7 +53,6 @@ public class SimpleCliApp implements CliAPI, CliApp{
                else throw new DuplicatedCommandException(cmd_name, cmd.commandMethod(), m);
            }
         }
-        // TODO: add exception here :)
 
         int i = 0;
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++i;
@@ -66,7 +65,7 @@ public class SimpleCliApp implements CliAPI, CliApp{
             if(type == null)
                 throw new InvalidParameterTypeException(m.getName(), p.getType());
 
-            String argName = transform_name(p.getName());
+            String argName = p.getName();
             String argDesc = "";
 
             CliAppArg argInfo = p.getAnnotation(CliAppArg.class);
@@ -75,21 +74,12 @@ public class SimpleCliApp implements CliAPI, CliApp{
                 argDesc = argInfo.desc();
             }
 
-            format.addArgument(argName, argDesc, type);
-        //    System.out.println("\t - adding parameter: " + argName);
+            format.addArgument(transform_name(argName), argDesc, type);
         }
 
         m.setAccessible(true); // help from stackoverflow
-
-        // TODO: exception if command duplicated
         Object cmd_store = (Modifier.isStatic(m.getModifiers())) ? null : this.cmdStore;
         commands.put(cmd_name, new AppCmd(cmd_name, aux.desc(), format, m, cmd_store));
-        //System.out.println(
-        //        getUsageMessage(
-        //            getCommand(cmd_name)
-        //            //commands.get(cmd_name)
-        //        )
-        //);
     }
 
     private void getCommands(Class<?> container){
