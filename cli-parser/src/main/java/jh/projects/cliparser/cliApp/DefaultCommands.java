@@ -33,8 +33,8 @@ class DefaultCommands {
         table.print();
     }
 
-    @CliAppCommand(desc = "exits the program")
-    public static void exit(CliAPI api){
+    @CliAppCommand(desc = "shutdown the program")
+    public static void quit(CliAPI api){
         api.exit();
     }
 

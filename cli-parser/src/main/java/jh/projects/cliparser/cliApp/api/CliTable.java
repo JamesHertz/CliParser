@@ -9,4 +9,5 @@ public interface CliTable {
     void setDelimiter(int idx, String del);
     void setDelimiter(String del);
     void print();
+    // todo: think about alignment :)
 }
