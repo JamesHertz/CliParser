@@ -3,11 +3,13 @@ package jh.projects.cliparser.cliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
-import jh.projects.cliparser.cliApp.api.CliTable;
-import jh.projects.cliparser.cliApp.api.Table;
+import jh.projects.cliparser.cliApp.api.form.CliForm;
+import jh.projects.cliparser.cliApp.api.form.Form;
+import jh.projects.cliparser.cliApp.api.table.CliTable;
+import jh.projects.cliparser.cliApp.api.table.Table;
 import jh.projects.cliparser.cliApp.exception.*;
 import jh.projects.cliparser.cliApp.listeners.*;
-import jh.projects.cliparser.parser.Argument;
+import jh.projects.cliparser.parser.FmtArgument;
 import jh.projects.cliparser.parser.DataType;
 
 import jh.projects.cliparser.parser.Format;
@@ -17,7 +19,6 @@ import jh.projects.cliparser.parser.exeptions.BadArgumentException;
 import static jh.projects.cliparser.parser.LineParser.parseLine;
 
 import java.io.InputStream;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -118,9 +119,20 @@ public class SimpleCliApp implements CliAPI, CliApp{
     }
 
 
+    // TODO: clean up things down here
     @Override
     public CliTable createTable(String[] headers) {
         return new Table(headers);
+    }
+
+    @Override
+    public CliTable createTable(int  cols) {
+        return new Table(cols);
+    }
+
+    @Override
+    public CliForm createForm() {
+        return new Form();
     }
 
     private void extractCommands(Class<?> container){
@@ -143,7 +155,7 @@ public class SimpleCliApp implements CliAPI, CliApp{
         // if the class receives the api :)
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++idx;
 
-        Argument[] args = new Argument[parameters.length - idx];
+        FmtArgument[] args = new FmtArgument[parameters.length - idx];
         for(; idx < parameters.length; ++idx){
             Parameter p = parameters[idx];
             DataType type = DataType.getType(p.getType());
@@ -193,8 +205,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
             Object[] cmd_args = new Object[cmd.getParsSize()];
             if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
 
-            for (Iterator<Argument> it = fmt.getArguments(); it.hasNext();) {
-                Argument arg = it.next();
+            for (Iterator<FmtArgument> it = fmt.getArguments(); it.hasNext();) {
+                FmtArgument arg = it.next();
                 cmd_args[cmd_idx++] = arg.parse(args[arg_idx++]);
             }
 

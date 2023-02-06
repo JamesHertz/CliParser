@@ -5,14 +5,14 @@ import java.util.List;
 
 public class ParserFormat implements Format {
     // TO-Think: should I move the getUsage method to here ?
-   private final List<Argument> format;
+   private final List<FmtArgument> format;
 
-    public ParserFormat(Argument ...args) {
+    public ParserFormat(FmtArgument...args) {
         format = List.of(args);
     }
 
     @Override
-    public Iterator<Argument> getArguments() {
+    public Iterator<FmtArgument> getArguments() {
         return format.iterator();
     }
 

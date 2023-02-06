@@ -1,7 +1,7 @@
 package jh.projects.cliparser.parser.exeptions;
 
 import jh.projects.cliparser.cliApp.exception.CliAppException;
-import jh.projects.cliparser.parser.Argument;
+import jh.projects.cliparser.parser.FmtArgument;
 import jh.projects.cliparser.parser.DataType;
 
 import static jh.projects.cliparser.parser.exeptions.DTExpectedMessage.getExpectedMessage;
@@ -89,18 +89,18 @@ public class BadArgumentException extends CliAppException {
     // and highlight the second str red
     private static final String MSG = "Bad argument for \033[1;37m<%s>\033[0m: '%s'\nExpected %s";
     private final String provided;
-    private Argument argument;
+    private FmtArgument argument;
 
     public BadArgumentException(String provided){
         this.provided = provided;
     }
-    public void setArgument(Argument other){
+    public void setArgument(FmtArgument other){
         this.argument = other;
     }
     public String getProvided() {
         return provided;
     }
-    public Argument getArgument() {
+    public FmtArgument getArgument() {
         return argument;
     }
     @Override

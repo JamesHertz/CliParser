@@ -5,6 +5,6 @@ import java.util.Iterator;
 
 public interface Format {
 
-    Iterator<Argument> getArguments();
+    Iterator<FmtArgument> getArguments();
     int size();
 }

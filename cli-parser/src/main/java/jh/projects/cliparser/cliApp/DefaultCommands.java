@@ -3,7 +3,7 @@ package jh.projects.cliparser.cliApp;
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
 import jh.projects.cliparser.cliApp.api.CliAPI;
-import jh.projects.cliparser.cliApp.api.CliTable;
+import jh.projects.cliparser.cliApp.api.table.CliTable;
 
 import java.util.Iterator;
 

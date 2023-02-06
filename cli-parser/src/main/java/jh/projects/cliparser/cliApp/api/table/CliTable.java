@@ -1,4 +1,4 @@
-package jh.projects.cliparser.cliApp.api;
+package jh.projects.cliparser.cliApp.api.table;
 
 public interface CliTable {
 
@@ -9,5 +9,11 @@ public interface CliTable {
     void setDelimiter(int idx, String del);
     void setDelimiter(String del);
     void print();
+    void printRow(int row);
+    // void printCol()
+
+    // void print(int row, int col);
     // todo: think about alignment :)
+    // todo: add methods that allow to print specific cell
+    // todo: add ways to take out the headers
 }

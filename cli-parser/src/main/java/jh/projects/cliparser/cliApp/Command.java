@@ -1,6 +1,6 @@
 package jh.projects.cliparser.cliApp;
 
-import jh.projects.cliparser.parser.Argument;
+import jh.projects.cliparser.parser.FmtArgument;
 import jh.projects.cliparser.parser.Format;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -67,9 +67,9 @@ class Command implements CliCommand {
 
     private String generateUsage(){
         StringBuilder builder = new StringBuilder();
-        Iterator<Argument> args = format.getArguments();
+        Iterator<FmtArgument> args = format.getArguments();
         while(args.hasNext()){
-            Argument arg = args.next();
+            FmtArgument arg = args.next();
             builder.append("<")
                     .append(arg.name())
                     .append("> ");
