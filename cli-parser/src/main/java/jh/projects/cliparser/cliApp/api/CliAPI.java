@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 public interface CliAPI {
     // FUTURE-PLAN: integrate this https://github.com/awegmann/consoleui in here.
+    // TODO: add other kinds of restrictions to arguments
 
     Object getCmdStore(); // should I deprecate it??
     Iterator<CommandInfo> getAllCommands();

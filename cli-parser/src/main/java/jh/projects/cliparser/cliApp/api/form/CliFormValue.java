@@ -25,6 +25,6 @@ public class CliFormValue {
 
     @Override
     public String toString(){
-        return (String) value;
+        return value.toString();
     }
 }
