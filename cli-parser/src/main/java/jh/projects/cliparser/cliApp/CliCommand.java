@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 interface CliCommand extends CommandInfo{
 
-    Format getArgsFormat();
     Method getMethod();
     boolean receivesCliApi();
     int getParsSize();

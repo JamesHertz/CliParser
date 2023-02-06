@@ -139,10 +139,11 @@ public class SimpleCliApp implements CliAPI, CliApp{
                throw new DuplicatedCommandException(cmd_name, cmd.getMethod(), m);
         }
 
-        int idx = 0;
+        int idx = 0, arg_idx = 0;
+        // if the class receives the api :)
         if(parameters.length > 0 && parameters[0].getType() == CliAPI.class) ++idx;
 
-        Format format = new ParserFormat(parameters.length - idx);
+        Argument[] args = new Argument[parameters.length - idx];
         for(; idx < parameters.length; ++idx){
             Parameter p = parameters[idx];
             DataType type = DataType.getType(p.getType());
@@ -159,9 +160,9 @@ public class SimpleCliApp implements CliAPI, CliApp{
                 argDesc = argInfo.desc();
             }
 
-            format.addArgument(transform_name(argName), argDesc, type);
+            args[arg_idx++] = new CliArgument(transform_name(argName), argDesc, type);
         }
-
+        Format format = new ParserFormat(args);
         m.setAccessible(true); // help from stackoverflow
         Object cmd_store = (Modifier.isStatic(m.getModifiers())) ? null : this.cmdStore;
         commands.put(cmd_name, new Command(cmd_name, aux.desc(), format, m, cmd_store));

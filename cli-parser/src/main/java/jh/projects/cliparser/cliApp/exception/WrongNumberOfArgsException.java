@@ -4,7 +4,7 @@ import jh.projects.cliparser.cliApp.CommandInfo;
 
 public class WrongNumberOfArgsException extends CliAppException{
 
-    private static final String MSG = "Expected %d args but got %s args.";
+    private static final String MSG = "Expected %d args but provided %s args.";
     private final int expected, provided;
     public WrongNumberOfArgsException(int expected, int provided){
         super(String.format(MSG, expected, provided));

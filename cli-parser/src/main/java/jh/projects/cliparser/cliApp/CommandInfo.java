@@ -13,5 +13,5 @@ public interface CommandInfo {
      */
     String getUsage();
 
-    // TODO: solve format problem, by sending all the formats to the constructor
+    Format getArgsFormat();
 }
