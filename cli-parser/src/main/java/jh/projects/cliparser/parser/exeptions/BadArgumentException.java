@@ -2,9 +2,6 @@ package jh.projects.cliparser.parser.exeptions;
 
 import jh.projects.cliparser.cliApp.exception.CliAppException;
 import jh.projects.cliparser.parser.FmtArgument;
-import jh.projects.cliparser.parser.DataType;
-
-import static jh.projects.cliparser.parser.exeptions.DTExpectedMessage.getExpectedMessage;
 
 public class BadArgumentException extends CliAppException {
 
@@ -103,10 +100,14 @@ public class BadArgumentException extends CliAppException {
     public FmtArgument getArgument() {
         return argument;
     }
+
+    public String getExpectedMessage(){
+        if(argument == null) return super.getMessage();
+        return DTExpectedMessage.getExpectedMessage(argument.type().getBaseType());
+    }
     @Override
     public String getMessage() {
         if(argument == null) return super.getMessage();
-        DataType arg_type = argument.type();
-        return String.format(MSG, argument.name(), provided, getExpectedMessage(arg_type.getBaseType()));
+        return String.format(MSG, argument.name(), provided, this.getExpectedMessage());
     }
 }

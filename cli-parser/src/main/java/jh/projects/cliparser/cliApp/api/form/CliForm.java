@@ -10,6 +10,8 @@ public interface CliForm {
     CliFormValue[] run();
     Argument getErrorCause();
 
+    void printError();
+
     /*
         CliForm addField(String name, DataType type);
         CliForm addField(String name, DataType type, String description);

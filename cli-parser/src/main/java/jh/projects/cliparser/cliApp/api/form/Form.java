@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class Form implements CliForm{
 
     private final List<FmtArgument> fields;
-    private Argument error;
+    private BadArgumentException error;
     private CliTable prompts;
 
     // InputStream stream
@@ -68,8 +68,7 @@ public class Form implements CliForm{
                    it.next().parse(args[idx++])
                 );
             }catch (BadArgumentException e){
-                error = e.getArgument();
-                return null;
+                error = e; return null;
             }
         }
         return values;
@@ -77,6 +76,15 @@ public class Form implements CliForm{
 
     @Override
     public Argument getErrorCause() {
-        return error;
+        return error.getArgument();
+    }
+
+    @Override
+    public void printError() {
+        if(error != null){
+            Argument arg = error.getArgument();
+            System.out.printf("Error: invalid value for form field '%s': %s\n", arg.name(), error.getProvided());
+            System.out.println("Expected " + error.getExpectedMessage());
+        }
     }
 }

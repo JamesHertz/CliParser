@@ -31,7 +31,7 @@ public class Surveys {
                 .addField("Answer", STRING)
                 .run();
         if(values == null)
-            System.out.printf("Invalid value for '%s'.\n", form.getErrorCause().name());
+            form.printError();
         else {
             int sv_id = curr_id++;
             answers.put(sv_id, new Survey(
