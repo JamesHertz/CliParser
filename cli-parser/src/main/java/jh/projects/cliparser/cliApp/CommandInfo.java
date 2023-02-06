@@ -2,6 +2,7 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.parser.Format;
 
+// todo: create groups
 public interface CommandInfo {
     String getName();
     String getDescription();

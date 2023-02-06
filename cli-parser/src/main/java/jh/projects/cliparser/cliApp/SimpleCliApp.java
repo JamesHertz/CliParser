@@ -85,8 +85,10 @@ public class SimpleCliApp implements CliAPI, CliApp{
             try {
                 run_commands(System.in);
             }catch (BadArgumentException | WrongNumberOfArgsException e){
-                String usage = e.getRelatedCommand().getUsage();
-                if(!usage.isEmpty()) System.out.printf("usage: %s\n", usage);
+                CommandInfo cmd = e.getRelatedCommand();
+                System.out.printf("usage: %s %s\n", cmd.getName(), cmd.getUsage());
+               // String usage = e.getRelatedCommand().getUsage(); // usage: think about this
+               // if(!usage.isEmpty()) System.out.printf("usage: %s\n", usage);
                 System.out.printf("Error: %s\n", e.getMessage());
             } catch (CliAppException e){
                 System.out.printf("Error: %s\n", e.getMessage());
