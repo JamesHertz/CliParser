@@ -5,7 +5,10 @@ import java.util.TreeMap;
 import java.util.Iterator;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.api.CliAPI;
+import jh.projects.cliparser.cliApp.api.table.CliTable;
 
+import static java.lang.String.format;
 public class PeopleManager {
     private record Person(String name, int age){}
     private final Map<String, Person> people;
@@ -16,26 +19,31 @@ public class PeopleManager {
     @CliAppCommand( key = "add", desc = "adds a new person")
     public void addPerson(String name, int age){
         var person = people.get(name);
-        if(age <= 0){
+        if(age <= 0)
             System.out.printf("Error: invalid age: %d\n", age);
-        }else if(person != null) {
+        else if(person != null)
             System.out.printf("Error: person '%s' already exists\n", name);
-        }else{
+        else if(age >= 200)
+            System.out.println("Sorry we don't accept person older than 2 centuries ;)");
+        else{
             people.put(name, new Person(name, age));
             System.out.printf("Person '%s' added with success!!\n", name);
         }
     }
 
     @CliAppCommand( desc = "list all the person registered")
-    public void listPeople(){
+    public void listPeople(CliAPI api){
         Iterator<Person> it = people.values().iterator();
         if(!it.hasNext())
             System.out.println("No person added!!");
         else {
+            CliTable table = api.createTable(new String[]{"NAME", "AGE"});
             while(it.hasNext()){
                 Person p = it.next();
-                System.out.printf("name: %s; age: %d\n", p.name(), p.age());
+                // using format by now ;)
+                table.add(p.name(), format("%3d", p.age()));
             }
+            table.print();
         }
     }
 
