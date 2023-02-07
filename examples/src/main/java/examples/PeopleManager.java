@@ -13,7 +13,7 @@ public class PeopleManager {
         people = new TreeMap<>();
     }
 
-    @CliAppCommand
+    @CliAppCommand( key = "add", desc = "adds a new person")
     public void addPerson(String name, int age){
         var person = people.get(name);
         if(age <= 0){
@@ -26,7 +26,7 @@ public class PeopleManager {
         }
     }
 
-    @CliAppCommand
+    @CliAppCommand( desc = "list all the person registered")
     public void listPeople(){
         Iterator<Person> it = people.values().iterator();
         if(!it.hasNext())
@@ -39,7 +39,7 @@ public class PeopleManager {
         }
     }
 
-    @CliAppCommand
+    @CliAppCommand(desc = "deletes a person given the name")
     public void deletePerson(String name){
         var err = people.remove(name);
         if(err == null)
@@ -48,7 +48,7 @@ public class PeopleManager {
             System.out.printf("Person '%s' removed with success\n", err.name);
     }
 
-    @CliAppCommand(key = "change")
+    @CliAppCommand(key = "change", desc = "changes a given person age")
     public void changeAge(String name, int new_age){
         var person = people.get(name);
         if(person == null)

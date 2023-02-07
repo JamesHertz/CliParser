@@ -2,11 +2,8 @@ package jh.projects.cliparser.cliApp;
 
 import jh.projects.cliparser.cliApp.annotations.CliAppArg;
 import jh.projects.cliparser.cliApp.annotations.CliAppCommand;
+import jh.projects.cliparser.cliApp.api.BaseAPI;
 import jh.projects.cliparser.cliApp.api.CliAPI;
-import jh.projects.cliparser.cliApp.api.form.CliForm;
-import jh.projects.cliparser.cliApp.api.form.Form;
-import jh.projects.cliparser.cliApp.api.table.CliTable;
-import jh.projects.cliparser.cliApp.api.table.Table;
 import jh.projects.cliparser.cliApp.exception.*;
 import jh.projects.cliparser.cliApp.listeners.*;
 import jh.projects.cliparser.parser.FmtArgument;
@@ -16,7 +13,9 @@ import jh.projects.cliparser.parser.Format;
 import jh.projects.cliparser.parser.ParserFormat;
 import jh.projects.cliparser.parser.exeptions.BadArgumentException;
 
+
 import static jh.projects.cliparser.parser.LineParser.parseLine;
+import static jh.projects.cliparser.cliApp.CliAppState.*;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -24,72 +23,67 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-public class SimpleCliApp implements CliAPI, CliApp{
-
+public class SimpleCliApp implements CliApp{
     private final Map<String, CommandInfo> commands;
     private final Object cmdStore;
-    private boolean running;
+    private CliAppState currState;
+    private final CliAPI api;
 
     /*
-    class Api implements CliAPI{
+        TODO:
+               X add a default command for exit
+               ~ build a set of useful libraries
+               - make a mini library with the colors
+               - add documentation for the methods
+               - Refactor CliAPI to be something that CliApp uses
+    */
 
+    private class MyAPI extends BaseAPI{
         @Override
         public Object getCmdStore() {
-            return null;
+            return cmdStore;
         }
-
         @Override
         public Iterator<CommandInfo> getAllCommands() {
-            return SimpleCliApp.this.getAllCommands();
+            return commands.values().iterator();
         }
-
-        @Override
-        public CliTable createTable(String[] headers) {
-            return new Table(headers);
-        }
-
         @Override
         public void exit() {
             SimpleCliApp.this.exit();
         }
     }
-     */
-
-    /*
-        TODO:
-               X add a default command for exit
-               - make a mini library with the colors
-               - add documentation for the methods
-               - build a set of useful libraries
-    */
 
     public SimpleCliApp(Object cmdStore){
         this.cmdStore = cmdStore;
-        this.running = false;
         this.commands = new TreeMap<>();
-
+        this.api = new MyAPI();
+        this.currState = NEW;
         this.extractCommands(DefaultCommands.class);  // add the default commands :)
         this.extractCommands(cmdStore.getClass());
     }
 
     @Override
-    public void run() {
-        final String prompt = ">> ";
+    public CliAppState getAppState() {
+        return currState;
+    }
 
-        this.running = true;
+    @Override
+    public void run() {
+        if(currState != NEW) throw new InvalidRunException(currState);
+        this.nextState();
+
+        final String prompt = ">> ";
         if(this.cmdStore instanceof CliRunListener){
-            ((CliRunListener) cmdStore).onRun(this);
+            ((CliRunListener) cmdStore).onRun(api);
         }
 
-        while(this.running){ // exit in ctrl+d ??
+        while(currState == RUNNING){ // exit in ctrl+d ??
             System.out.print(prompt);
             try {
                 run_commands(System.in);
             }catch (BadArgumentException | WrongNumberOfArgsException e){
                 CommandInfo cmd = e.getRelatedCommand();
                 System.out.printf("usage: %s %s\n", cmd.getName(), cmd.getUsage());
-               // String usage = e.getRelatedCommand().getUsage(); // usage: think about this
-               // if(!usage.isEmpty()) System.out.printf("usage: %s\n", usage);
                 System.out.printf("Error: %s\n", e.getMessage());
             } catch (CliAppException e){
                 System.out.printf("Error: %s\n", e.getMessage());
@@ -102,37 +96,8 @@ public class SimpleCliApp implements CliAPI, CliApp{
     }
 
     @Override
-    public Iterator<CommandInfo> getAllCommands() {
-        return commands.values().iterator();
-    }
-
-    @Override
-    public Object getCmdStore() {
-        return cmdStore;
-    }
-
-    @Override
-    public void exit() {
-        this.running = false;
-        if(this.cmdStore instanceof CliExitListener)
-            ((CliExitListener) cmdStore).onExit(this);
-    }
-
-
-    // TODO: clean up things down here
-    @Override
-    public CliTable createTable(String[] headers) {
-        return new Table(headers);
-    }
-
-    @Override
-    public CliTable createTable(int  cols) {
-        return new Table(cols);
-    }
-
-    @Override
-    public CliForm createForm() {
-        return new Form();
+    public CliAPI getAppAPI() {
+        return api;
     }
 
     private void extractCommands(Class<?> container){
@@ -203,7 +168,7 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
             int cmd_idx = 0, arg_idx = 1; // arg_idx is 1 because the first arg is the cmd name
             Object[] cmd_args = new Object[cmd.getParsSize()];
-            if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = this;
+            if(cmd.receivesCliApi()) cmd_args[cmd_idx++] = api;
 
             for (Iterator<FmtArgument> it = fmt.getArguments(); it.hasNext();) {
                 FmtArgument arg = it.next();
@@ -226,6 +191,18 @@ public class SimpleCliApp implements CliAPI, CliApp{
 
     private CliCommand getCommand(String commandName){
         return (CliCommand) commands.get(commandName);
+    }
+
+    private void nextState(){
+        currState = currState.next();
+    }
+
+    private void exit() {
+        if(currState != RUNNING) throw new InvalidExitException(currState);
+
+        this.nextState();
+        if(this.cmdStore instanceof CliExitListener)
+            ((CliExitListener) cmdStore).onExit(api);
     }
 
 }

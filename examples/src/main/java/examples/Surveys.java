@@ -22,7 +22,7 @@ public class Surveys {
     }
 
 
-    @CliAppCommand
+    @CliAppCommand(desc = "register an survey")
     public void register(CliAPI api){
         CliForm form = api.createForm();
         CliFormValue[] values = form
@@ -42,7 +42,7 @@ public class Surveys {
 
     }
 
-    @CliAppCommand
+    @CliAppCommand( desc = "unregisters the given survey given it's id")
     public void unregister(int id){
         Survey sv = answers.remove(id);
         if(sv == null)
@@ -51,7 +51,7 @@ public class Surveys {
             System.out.printf("Survey %d removed\n", id);
     }
 
-    @CliAppCommand
+    @CliAppCommand ( desc = "list all the registered surveys")
     public void list(CliAPI api){
         Iterator<Survey> it = answers.values().iterator();
         if(!it.hasNext())

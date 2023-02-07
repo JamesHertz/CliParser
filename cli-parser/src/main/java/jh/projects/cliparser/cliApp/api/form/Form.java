@@ -1,6 +1,7 @@
 package jh.projects.cliparser.cliApp.api.form;
 
 import jh.projects.cliparser.cliApp.CliArgument;
+import jh.projects.cliparser.cliApp.api.InputController;
 import jh.projects.cliparser.cliApp.api.table.CliTable;
 import jh.projects.cliparser.cliApp.api.table.Table;
 import jh.projects.cliparser.parser.Argument;
@@ -14,14 +15,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Form implements CliForm{
+public class Form extends InputController implements CliForm{
 
     private final List<FmtArgument> fields;
     private BadArgumentException error;
     private CliTable prompts;
 
+
     // InputStream stream
-    public Form(){
+    public Form(Scanner scanner){
+       super(scanner);
        fields = new LinkedList<>();
        prompts = new Table(2);
        error = null;
@@ -42,7 +45,6 @@ public class Form implements CliForm{
     @Override
     public CliFormValue[] run() {
         if(fields.isEmpty()) throw new RuntimeException("Empty form!!"); // todo: an exception
-        Scanner in = new Scanner(System.in);// TODO: change this to accept the CliApp input-stream.
 
         int idx = 0;
         CliFormValue[] values = new CliFormValue[fields.size()];
@@ -56,7 +58,7 @@ public class Form implements CliForm{
             FmtArgument arg = it.next();
             // TODO: think about default values
             prompts.printRow(row++);
-            args[idx++] = in.nextLine().trim();
+            args[idx++] = scanner.nextLine().trim();
         }
         // another loop to parse this time :)
         it = fields.iterator();

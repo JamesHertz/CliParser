@@ -7,26 +7,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Auto {
+public class NumberRegister {
 
         private List<Integer> values;
-        public Auto(){
+        public NumberRegister(){
            values = new ArrayList<>();
         }
 
         // exception: NumberFormatException
-        @CliAppCommand
+        @CliAppCommand(desc = "registers a value")
         public void add_name( byte value){
            values.add((int) value);
         }
 
-        @CliAppCommand
-        public void exit(CliAPI api){
+        @CliAppCommand(desc = "exits the app")
+        public void quit(CliAPI api){
             System.out.println("quitting");
             api.exit();
         }
 
-        @CliAppCommand
+        @CliAppCommand( desc = "list all the registered values")
         public void list(){
             Iterator<Integer> it = values.iterator();
             if(!it.hasNext())
